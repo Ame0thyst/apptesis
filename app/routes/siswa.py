@@ -298,6 +298,24 @@ def hasil_rekomendasi():
         else:
             paket_label = "Paket 1"
 
+    paket_proba_items = []
+    if hasattr(model_obj, 'predict_proba'):
+        try:
+            proba = model_obj.predict_proba([model_input])[0]
+            classes = getattr(model_obj, 'classes_', None)
+            labels = []
+            if classes is not None and label_encoder is not None:
+                for c in classes:
+                    labels.append(label_encoder.inverse_transform([c])[0])
+            elif classes is not None:
+                labels = [str(c) for c in classes]
+            else:
+                labels = ["Paket 1", "Paket 2", "Paket 3"]
+            paket_proba_items = list(zip(labels, proba))
+            paket_proba_items.sort(key=lambda x: x[1], reverse=True)
+        except Exception:
+            paket_proba_items = []
+
     paket_dict = {
         'Paket 1': ["Biologi", "Fisika", "Kimia", "Matematika"],
         'Paket 2': ["Biologi", "Matematika", "Ekonomi", "Sosiologi"],
@@ -314,6 +332,11 @@ def hasil_rekomendasi():
     paket = paket_label
     paket_mapel = paket_dict.get(paket_label, [])
     alasan = alasan_dict.get(paket_label, "Paket pilihan sesuai data Anda.")
+    paket_confidence = None
+    for l, p in paket_proba_items:
+        if l == paket_label:
+            paket_confidence = p
+            break
 
     # --- SIMPAN REKOMENDASI KE DATABASE TANPA ALASAN ---
     if student:
@@ -337,5 +360,7 @@ def hasil_rekomendasi():
         paket=paket,
         paket_mapel=paket_mapel,
         alasan=alasan,
-        semua_paket=semua_paket
+        semua_paket=semua_paket,
+        paket_confidence=paket_confidence,
+        paket_proba_items=paket_proba_items
     )

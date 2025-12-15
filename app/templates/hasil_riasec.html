@@ -1,37 +1,163 @@
-{% extends "base.html" %}
-{% block title %}Hasil Tes RIASEC{% endblock %}
-{% block content %}
+{% extends "base.html" %} {% block title %}Hasil Tes RIASEC{% endblock %} {%
+block content %}
 <div class="flex flex-col items-center">
-  <div class="bg-white rounded-2xl shadow-lg px-8 py-8 max-w-lg w-full text-center">
-    <h2 class="text-2xl font-bold mb-4">Hasil Tes RIASEC</h2>
-    <div class="flex flex-row justify-between items-center">
-      <div>
-        <canvas id="barChart" width="200" height="200"></canvas>
-      </div>
-      <div class="ml-6">
-        <div class="text-lg">Top 3 Kode:</div>
-        <div class="text-4xl font-bold mt-2">{{ top3 }}</div>
+  <div class="bg-white rounded-2xl shadow-lg px-8 py-8 max-w-4xl w-full">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-2xl font-bold">Hasil Tes RIASEC</h2>
+      <div class="text-right">
+        <div class="text-sm text-gray-500">Top 3 Kode</div>
+        <div class="text-3xl font-extrabold tracking-widest">{{ top3 }}</div>
       </div>
     </div>
-    <a href="{{ url_for('siswa.input_nilai') }}" class="block w-full bg-blue-700 text-white py-3 rounded-full font-semibold mt-8">Isi Nilai Rapor</a>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div class="bg-gray-50 rounded-xl p-4 border">
+        <div class="text-lg font-semibold mb-2">Distribusi Skor</div>
+        <canvas id="barChart" height="220"></canvas>
+      </div>
+      <div class="bg-gray-50 rounded-xl p-4 border">
+        <div class="text-lg font-semibold mb-2">Profil RIASEC</div>
+        <canvas id="radarChart" height="220"></canvas>
+      </div>
+    </div>
+
+    <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="rounded-xl border p-4">
+        <div class="text-sm text-gray-600">Skor Tertinggi</div>
+        <div id="highestDim" class="text-xl font-bold mt-1"></div>
+        <div id="highestVal" class="text-2xl font-extrabold"></div>
+      </div>
+      <div class="rounded-xl border p-4">
+        <div class="text-sm text-gray-600">Rata-rata Skor</div>
+        <div id="avgVal" class="text-2xl font-extrabold"></div>
+      </div>
+      <div class="rounded-xl border p-4">
+        <div class="text-sm text-gray-600">Total Skor</div>
+        <div id="sumVal" class="text-2xl font-extrabold"></div>
+      </div>
+    </div>
+
+    <div class="mt-8">
+      <div class="text-lg font-semibold mb-3">Penjelasan Dimensi</div>
+      <div class="grid md:grid-cols-3 gap-4">
+        <div class="bg-white rounded-xl border p-4">
+          <div class="font-bold">R — Realistic</div>
+          <div class="text-sm text-gray-600 mt-1">
+            Praktis, teknis, menyukai aktivitas fisik dan kerja dengan
+            alat/objek.
+          </div>
+        </div>
+        <div class="bg-white rounded-xl border p-4">
+          <div class="font-bold">I — Investigative</div>
+          <div class="text-sm text-gray-600 mt-1">
+            Analitis, ingin tahu, menyukai penelitian dan pemecahan masalah.
+          </div>
+        </div>
+        <div class="bg-white rounded-xl border p-4">
+          <div class="font-bold">A — Artistic</div>
+          <div class="text-sm text-gray-600 mt-1">
+            Kreatif, ekspresif, menyukai seni, desain, dan kebebasan
+            berekspresi.
+          </div>
+        </div>
+        <div class="bg-white rounded-xl border p-4">
+          <div class="font-bold">S — Social</div>
+          <div class="text-sm text-gray-600 mt-1">
+            Membantu, peduli, menyukai interaksi dan pengajaran/pendampingan.
+          </div>
+        </div>
+        <div class="bg-white rounded-xl border p-4">
+          <div class="font-bold">E — Enterprising</div>
+          <div class="text-sm text-gray-600 mt-1">
+            Persuasif, kepemimpinan, menyukai negosiasi dan kewirausahaan.
+          </div>
+        </div>
+        <div class="bg-white rounded-xl border p-4">
+          <div class="font-bold">C — Conventional</div>
+          <div class="text-sm text-gray-600 mt-1">
+            Terstruktur, teliti, menyukai administrasi dan pengolahan data.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <a
+      href="{{ url_for('siswa.input_nilai') }}"
+      class="block w-full bg-blue-700 hover:bg-blue-800 text-white py-3 rounded-full font-semibold mt-8"
+      >Lanjut Isi Nilai Rapor</a
+    >
   </div>
+  <div
+    id="riasec-data"
+    class="hidden"
+    data-scores="{{ skor_list|join(',') }}"
+  ></div>
 </div>
-{% endblock %}
-{% block scripts %}
+{% endblock %} {% block scripts %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-const data = {
-  labels: ['R', 'I', 'A', 'S', 'E', 'C'],
-  datasets: [{
-    label: 'Skor',
-    data: {{ skor_list|tojson }},
-    backgroundColor: ['#38bdf8', '#0ea5e9', '#2563eb', '#1d4ed8', '#818cf8', '#a5b4fc']
-  }]
-};
-new Chart(document.getElementById('barChart'), {
-  type: 'bar',
-  data: data,
-  options: { plugins: {legend: {display: false}}, scales:{y:{beginAtZero:true}} }
-});
+  const labels = ["R", "I", "A", "S", "E", "C"];
+  const ds = document.getElementById("riasec-data").dataset.scores;
+  const scores = ds.split(",").map((s) => parseFloat(s));
+
+  const palette = [
+    "#38bdf8",
+    "#0ea5e9",
+    "#2563eb",
+    "#1d4ed8",
+    "#818cf8",
+    "#a5b4fc",
+  ];
+
+  new Chart(document.getElementById("barChart"), {
+    type: "bar",
+    data: {
+      labels,
+      datasets: [
+        {
+          label: "Skor",
+          data: scores,
+          backgroundColor: palette,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false }, tooltip: { enabled: true } },
+      scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } },
+    },
+  });
+
+  new Chart(document.getElementById("radarChart"), {
+    type: "radar",
+    data: {
+      labels,
+      datasets: [
+        {
+          label: "Profil RIASEC",
+          data: scores,
+          backgroundColor: "rgba(37, 99, 235, 0.15)",
+          borderColor: "#2563eb",
+          pointBackgroundColor: "#2563eb",
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: { r: { beginAtZero: true, ticks: { stepSize: 1 } } },
+    },
+  });
+
+  const sum = scores.reduce((a, b) => a + b, 0);
+  const avg = scores.length ? sum / scores.length : 0;
+  let maxIdx = 0;
+  for (let i = 1; i < scores.length; i++) {
+    if (scores[i] > scores[maxIdx]) maxIdx = i;
+  }
+  document.getElementById("sumVal").textContent = sum;
+  document.getElementById("avgVal").textContent = avg.toFixed(1);
+  document.getElementById("highestDim").textContent = labels[maxIdx];
+  document.getElementById("highestVal").textContent = scores[maxIdx];
 </script>
 {% endblock %}
