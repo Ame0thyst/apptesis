@@ -128,4 +128,4 @@
 
 ## Lisensi
 
-- Proyek untuk kebutuhan akademik/demonstrasi. Sesuaikan lisensi sebelum distribusi.
+- Proyek untuk kebutuhan akademik/demonstrasi. 
