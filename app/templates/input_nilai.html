@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Isi Nilai Rapor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-blue-50 min-h-screen flex items-center justify-center">
+    <div class="bg-white rounded-2xl shadow-lg px-8 py-10 w-full max-w-md">
+        <h1 class="text-4xl font-bold text-center mb-2 text-blue-900">Isi Nilai Rapor</h1>
+        <p class="text-center text-lg text-blue-900 mb-8">Masukkan nilai rapor Anda untuk setiap mata pelajaran:</p>
+        <form method="post" class="space-y-6">
+            <div>
+                <label for="biologi" class="block text-xl text-blue-900 mb-1">Biologi</label>
+                <input type="number" name="biologi" id="biologi"
+                       class="w-full border border-blue-200 rounded-xl px-4 py-3 text-lg placeholder-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                       placeholder="Nilai" min="0" max="100" required>
+            </div>
+            <div>
+                <label for="fisika" class="block text-xl text-blue-900 mb-1">Fisika</label>
+                <input type="number" name="fisika" id="fisika"
+                       class="w-full border border-blue-200 rounded-xl px-4 py-3 text-lg placeholder-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                       placeholder="Nilai" min="0" max="100" required>
+            </div>
+            <div>
+                <label for="kimia" class="block text-xl text-blue-900 mb-1">Kimia</label>
+                <input type="number" name="kimia" id="kimia"
+                       class="w-full border border-blue-200 rounded-xl px-4 py-3 text-lg placeholder-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                       placeholder="Nilai" min="0" max="100" required>
+            </div>
+            <div>
+                <label for="matematika" class="block text-xl text-blue-900 mb-1">Matematika</label>
+                <input type="number" name="matematika" id="matematika"
+                       class="w-full border border-blue-200 rounded-xl px-4 py-3 text-lg placeholder-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                       placeholder="Nilai" min="0" max="100" required>
+            </div>
+            <div>
+                <label for="ekonomi" class="block text-xl text-blue-900 mb-1">Ekonomi</label>
+                <input type="number" name="ekonomi" id="ekonomi"
+                       class="w-full border border-blue-200 rounded-xl px-4 py-3 text-lg placeholder-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                       placeholder="Nilai" min="0" max="100" required>
+            </div>
+            <div>
+                <label for="sosiologi" class="block text-xl text-blue-900 mb-1">Sosiologi</label>
+                <input type="number" name="sosiologi" id="sosiologi"
+                       class="w-full border border-blue-200 rounded-xl px-4 py-3 text-lg placeholder-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                       placeholder="Nilai" min="0" max="100" required>
+            </div>
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xl font-bold py-3 rounded-full mt-4 transition">
+                SUBMIT
+            </button>
+        </form>
+    </div>
+</body>
+</html>

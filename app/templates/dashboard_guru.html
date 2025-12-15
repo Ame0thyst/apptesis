@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Dashboard Guru BK{% endblock %}
+{% block nav %}
+  <a href="{{ url_for('guru.dashboard_guru') }}" class="mr-4">Beranda</a>
+  <a href="#" class="mr-4">Data Siswa</a>
+  <a href="#" class="mr-4">Laporan</a>
+  <a href="{{ url_for('auth.logout') }}" class="mr-4">Logout</a>
+{% endblock %}
+{% block content %}
+<div class="grid grid-cols-3 gap-6 mb-8">
+  <div class="bg-gradient-to-r from-blue-600 to-blue-400 text-white rounded-xl p-6 flex flex-col items-center shadow">
+    <div class="text-3xl font-bold">{{ siswa_sudah_tes }}</div>
+    <div class="text-white mt-2">Siswa Sudah Tes</div>
+  </div>
+  <div class="bg-gradient-to-r from-blue-400 to-blue-300 text-white rounded-xl p-6 flex flex-col items-center shadow">
+    <div class="text-3xl font-bold">{{ siswa_belum_tes }}</div>
+    <div class="text-white mt-2">Siswa Belum Tes</div>
+  </div>
+  <div class="bg-gradient-to-r from-cyan-400 to-blue-300 text-white rounded-xl p-6 flex flex-col items-center shadow">
+    <div class="text-lg font-bold mb-2">Distribusi Paket</div>
+    <div class="text-white text-sm">Paket 1: {{ distribusi[0] }}<br>Paket 2: {{ distribusi[1] }}<br>Paket 3: {{ distribusi[2] }}</div>
+  </div>
+</div>
+<button class="border px-6 py-2 rounded-lg mb-4 font-semibold hover:bg-gray-100">Download CSV</button>
+<div class="bg-white rounded-xl shadow p-6">
+  <table class="min-w-full">
+    <thead>
+      <tr class="bg-gray-100 text-left">
+        <th class="py-2 px-4">Nama Siswa</th>
+        <th class="py-2 px-4">NISN</th>
+        <th class="py-2 px-4">Kode RIASEC</th>
+        <th class="py-2 px-4">Paket Rekomendasi</th>
+        <th class="py-2 px-4">Aksi</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for siswa in siswa_list %}
+      <tr>
+        <td class="py-2 px-4">{{ siswa.nama }}</td>
+        <td class="py-2 px-4">{{ siswa.nisn }}</td>
+        <td class="py-2 px-4">{{ siswa.kode_riasec }}</td>
+        <td class="py-2 px-4">{{ siswa.paket_rekomendasi }}</td>
+        <td class="py-2 px-4">
+          <a href="#" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg font-semibold">Lihat Detail</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

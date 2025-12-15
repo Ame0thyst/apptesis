@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Tambah Soal RIASEC{% endblock %}
+{% block content %}
+<h2 class="text-xl font-bold mb-4">Tambah Soal RIASEC</h2>
+<form method="post">
+    <label>Pertanyaan:</label>
+    <input type="text" name="pertanyaan" class="w-full mb-2 p-2 border rounded" required>
+    <label>Dimensi:</label>
+    <select name="dimensi" class="w-full mb-2 p-2 border rounded" required>
+        <option value="R">R</option>
+        <option value="I">I</option>
+        <option value="A">A</option>
+        <option value="S">S</option>
+        <option value="E">E</option>
+        <option value="C">C</option>
+    </select>
+    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Simpan</button>
+</form>
+{% endblock %}

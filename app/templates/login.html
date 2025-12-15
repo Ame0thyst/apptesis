@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Login Riasec Explorer{% endblock %}
+{% block content %}
+<div class="flex items-center justify-center min-h-[60vh]">
+  <form method="post" class="bg-white rounded-2xl shadow-lg px-10 py-8 w-full max-w-sm">
+    <h2 class="text-2xl font-bold mb-6 text-center">Login Riasec Explorer</h2>
+    <div class="mb-4">
+      <label class="block text-sm mb-1">Username</label>
+      <input name="username" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none" placeholder="Masukkan username" required>
+    </div>
+    <div class="mb-6">
+      <label class="block text-sm mb-1">Kata Sandi</label>
+      <input name="password" type="password" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none" placeholder="Masukkan password" required>
+    </div>
+    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition">Login</button>
+    <div class="text-center mt-4 text-sm">
+      Belum punya akun? <a href="#" class="text-blue-600 underline">Hubungi Admin</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

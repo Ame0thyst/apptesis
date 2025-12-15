@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard Siswa - Riasec Explorer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#f9fbfe] min-h-screen font-sans text-[#162760]">
+  <!-- Navbar -->
+  <nav class="flex justify-between items-center px-10 py-6">
+    <div class="flex items-center gap-3">
+      <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" class="h-9 w-9" />
+      <span class="font-bold text-2xl tracking-wide text-[#162760]">RIASEC EXPLORER</span>
+    </div>
+    <div class="flex gap-9 items-center font-semibold text-[#162760]">
+      <a href="#" class="hover:text-blue-700">Beranda</a>
+      <a href="#" class="hover:text-blue-700">Tentang</a>
+      <a href="#" class="hover:text-blue-700">Kontak</a>
+      <!-- Pastikan logout mengarah ke route yang tersedia; di sini kita gunakan siswa.logout -->
+      <a href="{{ url_for('siswa.logout') }}" class="ml-2 text-[#162760] hover:text-blue-700">Logout</a>
+    </div>
+  </nav>
+  <main class="flex flex-col lg:flex-row items-center justify-center px-4 lg:px-24 py-12">
+    <!-- Ilustrasi -->
+    <div class="flex-1 flex justify-center mb-10 lg:mb-0">
+      <img src="{{ url_for('static', filename='img/hero_illustration.png') }}" alt="Ilustrasi" class="max-w-xs md:max-w-sm lg:max-w-lg">
+    </div>
+    <!-- Card Selamat Datang -->
+    <div class="flex-1 flex justify-center">
+      <div class="bg-white rounded-3xl shadow-lg px-10 py-10 w-full max-w-xl">
+        <h2 class="text-3xl md:text-4xl font-extrabold leading-snug text-[#162760] mb-2">
+          Selamat datang,<br>
+          {{ student_name }} <span class="align-middle">👋</span>
+        </h2>
+        <div class="text-xl font-semibold text-[#162760] mb-6">Siap Mulai Tes RIASEC?</div>
+        <div class="mb-3">
+          <div class="w-full bg-[#e6ebf5] rounded-full h-3 mb-1 overflow-hidden">
+            <div class="bg-blue-300 h-3 rounded-full transition-all duration-500 ease-in-out" style="width: {{ percent }}%"></div>
+          </div>
+          <div class="text-sm text-[#7e8ba5] font-medium">{{ percent }}% {{ status }}</div>
+        </div>
+        <div class="mb-6">
+          <ol class="list-decimal ml-6 space-y-2 text-lg text-[#162760]">
+            <li class="flex justify-between items-center">
+              <span>Isi Tes RIASEC</span>
+              {% if riasec_done %}
+                <span class="text-green-600 font-semibold ml-4">✓</span>
+              {% endif %}
+            </li>
+            <li class="flex justify-between items-center">
+              <span>Isi Nilai Rapor</span>
+              {% if rapor_done %}
+                <span class="text-green-600 font-semibold ml-4">✓</span>
+              {% endif %}
+            </li>
+            <li class="flex justify-between items-center">
+              <span>Lihat Rekomendasi</span>
+              {% if rekom_done %}
+                <span class="text-green-600 font-semibold ml-4">✓</span>
+              {% endif %}
+            </li>
+          </ol>
+        </div>
+        <div class="flex gap-4">
+          <a href="{{ url_for('siswa.tes_riasec') }}" class="flex-1 text-center bg-blue-600 hover:bg-blue-700 text-white font-semibold text-lg py-3 rounded-full transition">Mulai Tes Sekarang</a>
+          <button type="button" onclick="openPetunjuk()" class="flex-1 text-center border border-blue-600 text-blue-600 hover:bg-blue-50 font-semibold text-lg py-3 rounded-full transition">Lihat Petunjuk</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal Petunjuk -->
+  <div id="modalPetunjuk" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden">
+    <div class="bg-white rounded-xl shadow-lg w-full max-w-lg mx-4 p-8 relative">
+      <button onclick="closePetunjuk()" class="absolute right-4 top-4 text-2xl text-gray-400 hover:text-gray-600">&times;</button>
+      <h3 class="text-2xl font-bold mb-4 text-[#162760]">Petunjuk Penggunaan</h3>
+      <ol class="list-decimal ml-6 mb-5 text-[#162760] space-y-2">
+        <li>Tes terdiri dari 42 pernyataan.</li>
+        <li>Pilih jawaban sesuai dengan apa yang kamu sukai, bukan sekadar bisa lakukan.</li>
+        <li>Tidak ada jawaban benar atau salah.</li>
+        <li>Waktu pengerjaan rata-rata ± 10—15 menit.</li>
+        <li>Pastikan mengerjakan dengan jujur agar hasil sesuai dengan minat dan bakatmu.</li>
+        <li>Isi nilai rapor sesuai mata pelajaran yang diminta.</li>
+        <li>Lihat rekomendasi paket mata pelajaran yang sesuai dengan hasil tes dan nilai rapor Anda.</li>
+        <li>Jika mengalami kendala, hubungi admin.</li>
+      </ol>
+      <div class="text-right">
+        <button onclick="closePetunjuk()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-full transition">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function openPetunjuk() {
+      document.getElementById('modalPetunjuk').classList.remove('hidden');
+    }
+    function closePetunjuk() {
+      document.getElementById('modalPetunjuk').classList.add('hidden');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+Flask
+Flask-Login
+Flask-SQLAlchemy
+Flask-Migrate
+PyMySQL
+python-dotenv
+scikit-learn
+pandas
+werkzeug
+tailwindcss

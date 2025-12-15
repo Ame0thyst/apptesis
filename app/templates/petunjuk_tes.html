@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block nav %}
+  <a href="#" class="mr-4">Beranda</a>
+  <a href="#" class="mr-4">About</a>
+  <a href="#" class="mr-4">Kontak</a>
+{% endblock %}
+{% block content %}
+<div class="flex flex-col items-center">
+  <div class="bg-white rounded-2xl shadow-lg px-8 py-8 max-w-lg w-full">
+    <h2 class="text-2xl font-bold mb-4">Petunjuk Pengerjaan Tes RIASEC</h2>
+    <ol class="list-decimal list-inside text-lg mb-6 space-y-2">
+      <li>Tes terdiri dari 42 pernyataan.</li>
+      <li>Pilih jawaban sesuai dengan apa yang kamu sukai, bukan sekadar bisa lakukan.</li>
+      <li>Tidak ada jawaban benar atau salah.</li>
+      <li>Waktu pengerjaan rata-rata ± 10—15 menit.</li>
+      <li>Pastikan mengerjakan dengan jujur agar hasil sesuai dengan minat dan bakatmu.</li>
+    </ol>
+    <a href="{{ url_for('siswa.tes_riasec') }}" class="block w-full bg-blue-700 text-white py-3 rounded-full font-semibold text-center">Mulai Tes Sekarang</a>
+  </div>
+</div>
+{% endblock %}
