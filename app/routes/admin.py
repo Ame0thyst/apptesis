@@ -391,11 +391,13 @@ def download_template():
     output = io.BytesIO()
     import pandas as pd
     
-    # Membuat template dataframe kosong
-    df = pd.DataFrame(columns=['Nama', 'NISN', 'Kelas'])
-    
-    # Contoh data (optional)
-    # df.loc[0] = ['Siswa Contoh', '1234567890', 'XII IPA 1']
+    df = pd.DataFrame(
+        [
+            {'Nama': 'Siswa Contoh 1', 'NISN': '0051234567', 'Kelas': 'XII MIPA 1', 'Role': 'siswa', 'Username': '0051234567', 'Password': '0051234567'},
+            {'Nama': 'Siswa Contoh 2', 'NISN': '0051234568', 'Kelas': 'XII IPS 1', 'Role': 'siswa', 'Username': '0051234568', 'Password': '0051234568'},
+        ],
+        columns=['Nama', 'NISN', 'Kelas', 'Role', 'Username', 'Password']
+    )
     
     with pd.ExcelWriter(output, engine='openpyxl') as writer:
         df.to_excel(writer, index=False, sheet_name='Template Siswa')
