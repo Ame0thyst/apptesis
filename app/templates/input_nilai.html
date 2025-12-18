@@ -1,56 +1,306 @@
 <!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Isi Nilai Rapor</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-</head>
-<body class="bg-blue-50 min-h-screen flex items-center justify-center">
-    <div class="bg-white rounded-2xl shadow-lg px-8 py-10 w-full max-w-md">
-        <h1 class="text-4xl font-bold text-center mb-2 text-blue-900">Isi Nilai Rapor</h1>
-        <p class="text-center text-lg text-blue-900 mb-8">Masukkan nilai rapor Anda untuk setiap mata pelajaran:</p>
-        <form method="post" class="space-y-6">
-            <div>
-                <label for="biologi" class="block text-xl text-blue-900 mb-1">Biologi</label>
-                <input type="number" name="biologi" id="biologi"
-                       class="w-full border border-blue-200 rounded-xl px-4 py-3 text-lg placeholder-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                       placeholder="Nilai" min="0" max="100" required>
-            </div>
-            <div>
-                <label for="fisika" class="block text-xl text-blue-900 mb-1">Fisika</label>
-                <input type="number" name="fisika" id="fisika"
-                       class="w-full border border-blue-200 rounded-xl px-4 py-3 text-lg placeholder-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                       placeholder="Nilai" min="0" max="100" required>
-            </div>
-            <div>
-                <label for="kimia" class="block text-xl text-blue-900 mb-1">Kimia</label>
-                <input type="number" name="kimia" id="kimia"
-                       class="w-full border border-blue-200 rounded-xl px-4 py-3 text-lg placeholder-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                       placeholder="Nilai" min="0" max="100" required>
-            </div>
-            <div>
-                <label for="matematika" class="block text-xl text-blue-900 mb-1">Matematika</label>
-                <input type="number" name="matematika" id="matematika"
-                       class="w-full border border-blue-200 rounded-xl px-4 py-3 text-lg placeholder-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                       placeholder="Nilai" min="0" max="100" required>
-            </div>
-            <div>
-                <label for="ekonomi" class="block text-xl text-blue-900 mb-1">Ekonomi</label>
-                <input type="number" name="ekonomi" id="ekonomi"
-                       class="w-full border border-blue-200 rounded-xl px-4 py-3 text-lg placeholder-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                       placeholder="Nilai" min="0" max="100" required>
-            </div>
-            <div>
-                <label for="sosiologi" class="block text-xl text-blue-900 mb-1">Sosiologi</label>
-                <input type="number" name="sosiologi" id="sosiologi"
-                       class="w-full border border-blue-200 rounded-xl px-4 py-3 text-lg placeholder-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                       placeholder="Nilai" min="0" max="100" required>
-            </div>
-            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xl font-bold py-3 rounded-full mt-4 transition">
-                SUBMIT
-            </button>
-        </form>
+<html lang="id" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Isi Nilai Rapor - Riasec Explorer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+      }
+    </style>
+  </head>
+  <body class="bg-slate-50 min-h-screen text-slate-800">
+    <!-- Decorative Background -->
+    <div class="fixed inset-0 pointer-events-none z-0">
+      <div
+        class="absolute top-0 left-0 w-full h-96 bg-gradient-to-b from-blue-100/50 to-transparent"
+      ></div>
+      <div
+        class="absolute top-20 right-0 w-72 h-72 bg-purple-200/30 rounded-full blur-3xl"
+      ></div>
+      <div
+        class="absolute bottom-0 left-20 w-80 h-80 bg-blue-200/30 rounded-full blur-3xl"
+      ></div>
     </div>
-</body>
+
+    <!-- Navbar -->
+    <nav
+      class="fixed w-full z-50 bg-slate-50/90 backdrop-blur-xl border-b border-slate-200/60 transition-all duration-300"
+    >
+      <div
+        class="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between"
+      >
+        <div class="flex items-center gap-3">
+          <img
+            src="{{ url_for('static', filename='img/logo.png') }}"
+            alt="Logo"
+            class="h-8 w-8 rounded-lg shadow-sm"
+          />
+          <span
+            class="font-bold text-lg tracking-tight text-slate-900 hidden sm:inline"
+            >RIASEC EXPLORER</span
+          >
+        </div>
+        <div class="flex items-center gap-4">
+          <!-- <a href="{{ url_for('siswa.dashboard_siswa') }}" class="text-sm font-medium text-slate-500 hover:text-blue-600 transition">
+                    Dashboard
+                </a> -->
+          <a
+            href="{{ url_for('auth.logout') }}"
+            class="text-sm font-bold text-slate-600 hover:text-rose-600 transition px-3 py-1.5 rounded-lg hover:bg-slate-100"
+          >
+            Keluar
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="relative z-10 max-w-3xl mx-auto px-4 pt-28 pb-12">
+      <div class="text-center mb-10">
+        <div
+          class="inline-flex items-center justify-center px-4 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold uppercase tracking-wider mb-4 border border-emerald-100"
+        >
+          Langkah 2 dari 3
+        </div>
+        <h1 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-3">
+          Input Nilai Rapor
+        </h1>
+        <p class="text-slate-500 text-lg max-w-2xl mx-auto">
+          Masukkan nilai rata-rata rapor semester terakhirmu untuk mata
+          pelajaran berikut.
+        </p>
+      </div>
+
+      <div
+        class="bg-white rounded-2xl shadow-xl shadow-blue-900/5 border border-slate-100 p-8"
+      >
+        <form method="post" class="space-y-8">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+            <!-- Kelompok IPA -->
+            <div class="space-y-6">
+              <h3
+                class="font-bold text-slate-400 text-xs uppercase tracking-wider border-b border-slate-100 pb-2 mb-4"
+              >
+                Sains & Matematika
+              </h3>
+
+              <div class="group">
+                <label
+                  for="matematika"
+                  class="block text-sm font-bold text-slate-700 mb-2"
+                  >Matematika</label
+                >
+                <div class="relative">
+                  <input
+                    type="number"
+                    name="matematika"
+                    id="matematika"
+                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-lg font-bold text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-center"
+                    placeholder="0-100"
+                    min="0"
+                    max="100"
+                    required
+                  />
+                  <div
+                    class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-slate-400 font-medium"
+                  >
+                    Pts
+                  </div>
+                </div>
+              </div>
+
+              <div class="group">
+                <label
+                  for="fisika"
+                  class="block text-sm font-bold text-slate-700 mb-2"
+                  >Fisika</label
+                >
+                <div class="relative">
+                  <input
+                    type="number"
+                    name="fisika"
+                    id="fisika"
+                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-lg font-bold text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-center"
+                    placeholder="0-100"
+                    min="0"
+                    max="100"
+                    required
+                  />
+                  <div
+                    class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-slate-400 font-medium"
+                  >
+                    Pts
+                  </div>
+                </div>
+              </div>
+
+              <div class="group">
+                <label
+                  for="biologi"
+                  class="block text-sm font-bold text-slate-700 mb-2"
+                  >Biologi</label
+                >
+                <div class="relative">
+                  <input
+                    type="number"
+                    name="biologi"
+                    id="biologi"
+                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-lg font-bold text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-center"
+                    placeholder="0-100"
+                    min="0"
+                    max="100"
+                    required
+                  />
+                  <div
+                    class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-slate-400 font-medium"
+                  >
+                    Pts
+                  </div>
+                </div>
+              </div>
+
+              <div class="group">
+                <label
+                  for="kimia"
+                  class="block text-sm font-bold text-slate-700 mb-2"
+                  >Kimia</label
+                >
+                <div class="relative">
+                  <input
+                    type="number"
+                    name="kimia"
+                    id="kimia"
+                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-lg font-bold text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-center"
+                    placeholder="0-100"
+                    min="0"
+                    max="100"
+                    required
+                  />
+                  <div
+                    class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-slate-400 font-medium"
+                  >
+                    Pts
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Kelompok IPS -->
+            <div class="space-y-6">
+              <h3
+                class="font-bold text-slate-400 text-xs uppercase tracking-wider border-b border-slate-100 pb-2 mb-4"
+              >
+                Ilmu Sosial
+              </h3>
+
+              <div class="group">
+                <label
+                  for="ekonomi"
+                  class="block text-sm font-bold text-slate-700 mb-2"
+                  >Ekonomi</label
+                >
+                <div class="relative">
+                  <input
+                    type="number"
+                    name="ekonomi"
+                    id="ekonomi"
+                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-lg font-bold text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-center"
+                    placeholder="0-100"
+                    min="0"
+                    max="100"
+                    required
+                  />
+                  <div
+                    class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-slate-400 font-medium"
+                  >
+                    Pts
+                  </div>
+                </div>
+              </div>
+
+              <div class="group">
+                <label
+                  for="sosiologi"
+                  class="block text-sm font-bold text-slate-700 mb-2"
+                  >Sosiologi</label
+                >
+                <div class="relative">
+                  <input
+                    type="number"
+                    name="sosiologi"
+                    id="sosiologi"
+                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-lg font-bold text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-center"
+                    placeholder="0-100"
+                    min="0"
+                    max="100"
+                    required
+                  />
+                  <div
+                    class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-slate-400 font-medium"
+                  >
+                    Pts
+                  </div>
+                </div>
+              </div>
+
+              <!-- Info Box -->
+              <div
+                class="bg-blue-50 rounded-xl p-4 mt-8 border border-blue-100"
+              >
+                <div class="flex gap-3">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6 text-blue-600 flex-shrink-0"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <p class="text-sm text-blue-800 leading-relaxed">
+                    Pastikan nilai yang dimasukkan adalah nilai pengetahuan
+                    (bukan keterampilan) skala 0-100.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-6 border-t border-slate-100 mt-8">
+            <button
+              type="submit"
+              class="w-full group relative flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-lg font-bold shadow-lg shadow-blue-500/30 transition-all hover:scale-[1.01] hover:shadow-blue-500/40 active:scale-[0.99]"
+            >
+              <span>Simpan & Lihat Rekomendasi</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 transition-transform group-hover:translate-x-1"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 7l5 5m0 0l-5 5m5-5H6"
+                />
+              </svg>
+            </button>
+          </div>
+        </form>
+      </div>
+    </main>
+  </body>
 </html>

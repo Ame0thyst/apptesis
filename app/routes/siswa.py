@@ -15,6 +15,31 @@ SOAL_PER_HALAMAN = 7
 def landing_page():
     return render_template('landing.html')
 
+def get_or_create_student(user):
+    """
+    Helper untuk mendapatkan data student berdasarkan user.
+    Jika belum ada di tabel 'students', buat baru dari data 'users'.
+    """
+    student = Student.query.filter_by(id_user=user.id).first()
+    if not student:
+        # Coba buat data student dari data user
+        # Pastikan user punya nisn & nama (karena di tabel students wajib/NOT NULL)
+        if user.nisn and user.nama:
+            try:
+                student = Student(
+                    id_user=user.id,
+                    nisn=user.nisn,
+                    nama=user.nama,
+                    kelas=user.kelas
+                )
+                db.session.add(student)
+                db.session.commit()
+            except Exception as e:
+                db.session.rollback()
+                print(f"Gagal auto-create student: {e}")
+                return None
+    return student
+
 @siswa_bp.route('/siswa')
 @login_required
 def dashboard_siswa():
@@ -22,15 +47,15 @@ def dashboard_siswa():
     if getattr(current_user, 'role', None) != 'siswa':
         return redirect(url_for('auth.login'))
 
-    # cari record student (relasi ke user)
-    student = Student.query.filter_by(id_user=current_user.id).first()
+    # cari record student (relasi ke user), auto-create jika perlu
+    student = get_or_create_student(current_user)
 
     # Ambil nama siswa jika ada, fallback ke username
     if student and getattr(student, 'nama', None):
         student_name = student.nama
     else:
         # fallback: user punya username (models.User punya field username)
-        student_name = getattr(current_user, 'username', None) or 'Nama Siswa'
+        student_name = getattr(current_user, 'nama', None) or getattr(current_user, 'username', None) or 'Nama Siswa'
 
     # cek keberadaan hasil untuk setiap langkah
     riasec_done = False
@@ -76,7 +101,7 @@ def logout():
 @siswa_bp.route('/tes_riasec', methods=['GET', 'POST'])
 @login_required
 def tes_riasec():
-    student = Student.query.filter_by(id_user=current_user.id).first()
+    student = get_or_create_student(current_user)
     if not student:
         flash("Data siswa tidak ditemukan.")
         return redirect(url_for('siswa.dashboard_siswa'))
@@ -169,7 +194,7 @@ def tes_riasec():
 @siswa_bp.route('/hasil_riasec')
 @login_required
 def hasil_riasec():
-    student = Student.query.filter_by(id_user=current_user.id).first()
+    student = get_or_create_student(current_user)
     result = RiasecResult.query.filter_by(id_student=student.id).first() if student else None
     if result:
         skor_list = [result.skor_R, result.skor_I, result.skor_A, result.skor_S, result.skor_E, result.skor_C]
@@ -182,7 +207,7 @@ def hasil_riasec():
 @siswa_bp.route('/input_nilai', methods=['GET', 'POST'])
 @login_required
 def input_nilai():
-    student = Student.query.filter_by(id_user=current_user.id).first()
+    student = get_or_create_student(current_user)
     if request.method == 'POST':
         # Ambil nilai dari form
         biologi = request.form.get('biologi')
@@ -218,7 +243,7 @@ def input_nilai():
 @siswa_bp.route('/hasil_rekomendasi')
 @login_required
 def hasil_rekomendasi():
-    student = Student.query.filter_by(id_user=current_user.id).first()
+    student = get_or_create_student(current_user)
     hasil_riasec = RiasecResult.query.filter_by(id_student=student.id).first() if student else None
 
     # Ambil nilai rapor dari database

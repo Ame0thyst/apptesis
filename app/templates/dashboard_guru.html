@@ -1,51 +1,401 @@
-{% extends "base.html" %}
-{% block title %}Dashboard Guru BK{% endblock %}
-{% block nav %}
-  <a href="{{ url_for('guru.dashboard_guru') }}" class="mr-4">Beranda</a>
-  <a href="#" class="mr-4">Data Siswa</a>
-  <a href="#" class="mr-4">Laporan</a>
-  <a href="{{ url_for('auth.logout') }}" class="mr-4">Logout</a>
-{% endblock %}
-{% block content %}
-<div class="grid grid-cols-3 gap-6 mb-8">
-  <div class="bg-gradient-to-r from-blue-600 to-blue-400 text-white rounded-xl p-6 flex flex-col items-center shadow">
-    <div class="text-3xl font-bold">{{ siswa_sudah_tes }}</div>
-    <div class="text-white mt-2">Siswa Sudah Tes</div>
-  </div>
-  <div class="bg-gradient-to-r from-blue-400 to-blue-300 text-white rounded-xl p-6 flex flex-col items-center shadow">
-    <div class="text-3xl font-bold">{{ siswa_belum_tes }}</div>
-    <div class="text-white mt-2">Siswa Belum Tes</div>
-  </div>
-  <div class="bg-gradient-to-r from-cyan-400 to-blue-300 text-white rounded-xl p-6 flex flex-col items-center shadow">
-    <div class="text-lg font-bold mb-2">Distribusi Paket</div>
-    <div class="text-white text-sm">Paket 1: {{ distribusi[0] }}<br>Paket 2: {{ distribusi[1] }}<br>Paket 3: {{ distribusi[2] }}</div>
+{% extends "base.html" %} {% block title %}Dashboard Guru BK{% endblock %} {%
+block content %}
+<div class="mb-8 flex justify-between items-center">
+  <h1 class="text-3xl font-bold text-gray-800">Dashboard Guru BK</h1>
+  <div class="flex items-center space-x-4">
+    <div class="text-gray-600">
+      Selamat datang,
+      <span class="font-semibold">{{ current_user.username }}</span>
+    </div>
+    <a href="{{ url_for('auth.logout') }}" class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-semibold">
+      Logout
+    </a>
   </div>
 </div>
-<button class="border px-6 py-2 rounded-lg mb-4 font-semibold hover:bg-gray-100">Download CSV</button>
-<div class="bg-white rounded-xl shadow p-6">
-  <table class="min-w-full">
-    <thead>
-      <tr class="bg-gray-100 text-left">
-        <th class="py-2 px-4">Nama Siswa</th>
-        <th class="py-2 px-4">NISN</th>
-        <th class="py-2 px-4">Kode RIASEC</th>
-        <th class="py-2 px-4">Paket Rekomendasi</th>
-        <th class="py-2 px-4">Aksi</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for siswa in siswa_list %}
-      <tr>
-        <td class="py-2 px-4">{{ siswa.nama }}</td>
-        <td class="py-2 px-4">{{ siswa.nisn }}</td>
-        <td class="py-2 px-4">{{ siswa.kode_riasec }}</td>
-        <td class="py-2 px-4">{{ siswa.paket_rekomendasi }}</td>
-        <td class="py-2 px-4">
-          <a href="#" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg font-semibold">Lihat Detail</a>
-        </td>
-      </tr>
+
+<!-- Statistik Cards -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+  <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-blue-600">
+    <div class="flex justify-between items-start">
+      <div>
+        <p class="text-xs font-semibold text-gray-500 uppercase">Total Siswa</p>
+        <h3 class="text-2xl font-bold text-gray-800 mt-1">
+          {{ total_siswa }}
+        </h3>
+      </div>
+      <div class="p-2 bg-blue-50 rounded-lg text-blue-600">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+          />
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-green-500">
+    <div class="flex justify-between items-start">
+      <div>
+        <p class="text-xs font-semibold text-gray-500 uppercase">Sudah Tes</p>
+        <h3 class="text-2xl font-bold text-gray-800 mt-1">
+          {{ siswa_sudah_tes }}
+        </h3>
+      </div>
+      <div class="p-2 bg-green-50 rounded-lg text-green-600">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-yellow-500">
+    <div class="flex justify-between items-start">
+      <div>
+        <p class="text-xs font-semibold text-gray-500 uppercase">Belum Tes</p>
+        <h3 class="text-2xl font-bold text-gray-800 mt-1">
+          {{ siswa_belum_tes }}
+        </h3>
+      </div>
+      <div class="p-2 bg-yellow-50 rounded-lg text-yellow-600">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-purple-500">
+    <div class="flex justify-between items-start">
+      <div>
+        <p class="text-xs font-semibold text-gray-500 uppercase">Progress</p>
+        <h3 class="text-2xl font-bold text-gray-800 mt-1">
+          {% if total_siswa > 0 %} {{ ((siswa_sudah_tes / total_siswa) * 100)|round|int }}% {% else %} 0% {% endif %}
+        </h3>
+      </div>
+      <div class="p-2 bg-purple-50 rounded-lg text-purple-600">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+          />
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Chart Section -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+  <div class="lg:col-span-2 bg-white rounded-xl shadow-sm p-6">
+    <h3 class="text-lg font-bold text-gray-800 mb-4">
+      Distribusi Paket Rekomendasi
+    </h3>
+    <div class="h-64">
+      <canvas id="paketChart"></canvas>
+    </div>
+  </div>
+  <div class="bg-white rounded-xl shadow-sm p-6">
+    <h3 class="text-lg font-bold text-gray-800 mb-4">Status Pengerjaan</h3>
+    <div class="h-64 flex justify-center">
+      <canvas id="statusChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- Filter Section -->
+<div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+  <h3 class="text-lg font-bold text-gray-800 mb-4">Filter Data Siswa</h3>
+  <form method="GET" action="{{ url_for('guru.dashboard_guru') }}">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Nama Siswa</label>
+        <input type="text" name="nama" value="{{ filters.nama }}" placeholder="Cari nama..." 
+               class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 transition text-sm">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Kelas</label>
+        <input type="text" name="kelas" value="{{ filters.kelas }}" placeholder="Contoh: XII-1" 
+               class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 transition text-sm">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Kode RIASEC</label>
+        <input type="text" name="riasec" value="{{ filters.riasec }}" placeholder="Contoh: R, RIA" 
+               class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 transition text-sm">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Paket Rekomendasi</label>
+        <select name="paket" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 transition text-sm">
+          <option value="">Semua Paket</option>
+          <option value="Paket 1" {% if filters.paket == 'Paket 1' %}selected{% endif %}>Paket 1</option>
+          <option value="Paket 2" {% if filters.paket == 'Paket 2' %}selected{% endif %}>Paket 2</option>
+          <option value="Paket 3" {% if filters.paket == 'Paket 3' %}selected{% endif %}>Paket 3</option>
+        </select>
+      </div>
+    </div>
+    <div class="mt-4 flex justify-end gap-2">
+      <a href="{{ url_for('guru.dashboard_guru') }}" class="px-4 py-2 text-sm text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition font-medium">Reset</a>
+      <button type="submit" class="px-4 py-2 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition shadow-sm font-semibold">
+        Terapkan Filter
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- Data Table Section -->
+<div class="bg-white rounded-xl shadow-sm overflow-hidden">
+  <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+    <h3 class="text-lg font-bold text-gray-800">Data Siswa</h3>
+    <button
+      class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center transition"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-4 w-4 mr-2"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+        />
+      </svg>
+      Export CSV
+    </button>
+  </div>
+  <div class="overflow-x-auto">
+    <table class="w-full text-left border-collapse">
+      <thead>
+        <tr class="bg-gray-50 text-gray-600 text-sm uppercase tracking-wider">
+          <th class="py-4 px-6 font-semibold">Nama Siswa</th>
+          <th class="py-4 px-6 font-semibold">NISN</th>
+          <th class="py-4 px-6 font-semibold">Kelas</th>
+          <th class="py-4 px-6 font-semibold">Kode RIASEC</th>
+          <th class="py-4 px-6 font-semibold">Paket Rekomendasi</th>
+          <th class="py-4 px-6 font-semibold text-center">Aksi</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-100">
+        {% for siswa in siswa_list %}
+        <tr class="hover:bg-gray-50 transition">
+          <td class="py-4 px-6 font-medium text-gray-800">{{ siswa.nama }}</td>
+          <td class="py-4 px-6 text-gray-600">{{ siswa.nisn }}</td>
+          <td class="py-4 px-6 text-gray-600">{{ siswa.kelas }}</td>
+          <td class="py-4 px-6">
+            {% if siswa.kode_riasec != "-" %}
+            <span
+              class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-bold"
+              >{{ siswa.kode_riasec }}</span
+            >
+            {% else %}
+            <span class="text-gray-400">-</span>
+            {% endif %}
+          </td>
+          <td class="py-4 px-6">
+            {% if siswa.paket_rekomendasi == "Paket 1" %}
+            <span
+              class="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs font-bold"
+              >Paket 1</span
+            >
+            {% elif siswa.paket_rekomendasi == "Paket 2" %}
+            <span
+              class="bg-teal-100 text-teal-800 px-2 py-1 rounded text-xs font-bold"
+              >Paket 2</span
+            >
+            {% elif siswa.paket_rekomendasi == "Paket 3" %}
+            <span
+              class="bg-orange-100 text-orange-800 px-2 py-1 rounded text-xs font-bold"
+              >Paket 3</span
+            >
+            {% else %}
+            <span class="text-gray-400">-</span>
+            {% endif %}
+          </td>
+          <td class="py-4 px-6 text-center">
+            <a
+              href="{{ url_for('guru.detail_siswa', user_id=siswa.id) }}"
+              class="text-blue-600 hover:text-blue-800 font-medium text-sm"
+              >Lihat Detail</a
+            >
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% if siswa_list|length == 0 %}
+  <div class="p-8 text-center text-gray-500">Belum ada data siswa.</div>
+  {% endif %}
+
+  <!-- Pagination -->
+  {% if pagination.pages > 1 %}
+  <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50">
+    <div class="text-sm text-gray-500">
+      Menampilkan <span class="font-bold">{{ pagination.first }}</span> sampai <span class="font-bold">{{ pagination.last }}</span> dari <span class="font-bold">{{ pagination.total }}</span> siswa
+    </div>
+    <div class="flex gap-2">
+      {% if pagination.has_prev %}
+      <a href="{{ url_for('guru.dashboard_guru', page=pagination.prev_num, **filters) }}" 
+         class="px-3 py-1 rounded-md border border-gray-300 bg-white hover:bg-gray-50 text-gray-600 text-sm font-medium transition">
+         Previous
+      </a>
+      {% else %}
+      <span class="px-3 py-1 rounded-md border border-gray-200 bg-gray-50 text-gray-400 text-sm font-medium cursor-not-allowed">
+        Previous
+      </span>
+      {% endif %}
+
+      <div class="hidden sm:flex gap-1">
+      {% for p in pagination.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=1) %}
+        {% if p %}
+          {% if p == pagination.page %}
+          <span class="px-3 py-1 rounded-md bg-blue-600 text-white text-sm font-bold shadow-sm">{{ p }}</span>
+          {% else %}
+          <a href="{{ url_for('guru.dashboard_guru', page=p, **filters) }}" 
+             class="px-3 py-1 rounded-md border border-gray-300 bg-white hover:bg-gray-50 text-gray-600 text-sm font-medium transition">{{ p }}</a>
+          {% endif %}
+        {% else %}
+          <span class="px-2 text-gray-400 flex items-center">...</span>
+        {% endif %}
       {% endfor %}
-    </tbody>
-  </table>
+      </div>
+
+      {% if pagination.has_next %}
+      <a href="{{ url_for('guru.dashboard_guru', page=pagination.next_num, **filters) }}" 
+         class="px-3 py-1 rounded-md border border-gray-300 bg-white hover:bg-gray-50 text-gray-600 text-sm font-medium transition">
+         Next
+      </a>
+      {% else %}
+      <span class="px-3 py-1 rounded-md border border-gray-200 bg-gray-50 text-gray-400 text-sm font-medium cursor-not-allowed">
+        Next
+      </span>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
 </div>
+
+<!-- Chart JS Initialization -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Mengambil data dari server (Flask) dan mengubahnya menjadi format JavaScript yang valid
+  // Penggunaan tanda kutip dan JSON.parse membantu menghindari error syntax highlighting di editor
+  const distribusiData = JSON.parse("{{ distribusi | tojson | safe }}");
+  const siswaSudahTes = Number("{{ siswa_sudah_tes }}");
+  const siswaBelumTes = Number("{{ siswa_belum_tes }}");
+
+  // Data Distribusi Paket
+  const ctxPaket = document.getElementById("paketChart").getContext("2d");
+  new Chart(ctxPaket, {
+    type: "bar",
+    data: {
+      labels: ["Paket 1", "Paket 2", "Paket 3"],
+      datasets: [
+        {
+          label: "Jumlah Siswa",
+          data: distribusiData,
+          backgroundColor: [
+            "rgba(147, 51, 234, 0.7)", // Purple
+            "rgba(20, 184, 166, 0.7)", // Teal
+            "rgba(249, 115, 22, 0.7)", // Orange
+          ],
+          borderColor: [
+            "rgb(147, 51, 234)",
+            "rgb(20, 184, 166)",
+            "rgb(249, 115, 22)",
+          ],
+          borderWidth: 1,
+          borderRadius: 6,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            stepSize: 1,
+          },
+        },
+      },
+      plugins: {
+        legend: {
+          display: false,
+        },
+      },
+    },
+  });
+
+  // Data Status Pengerjaan
+  const ctxStatus = document.getElementById("statusChart").getContext("2d");
+  new Chart(ctxStatus, {
+    type: "doughnut",
+    data: {
+      labels: ["Sudah Tes", "Belum Tes"],
+      datasets: [
+        {
+          data: [siswaSudahTes, siswaBelumTes],
+          backgroundColor: [
+            "rgba(34, 197, 94, 0.8)", // Green
+            "rgba(234, 179, 8, 0.8)", // Yellow
+          ],
+          borderWidth: 0,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: "bottom",
+        },
+      },
+    },
+  });
+</script>
 {% endblock %}

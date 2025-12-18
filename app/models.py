@@ -7,6 +7,11 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
     role = db.Column(db.String(20), nullable=False)  # 'siswa', 'admin', dst
+    
+    # Tambahan fields untuk role='siswa'
+    nisn = db.Column(db.String(20), unique=True, nullable=True)
+    nama = db.Column(db.String(150), nullable=True)
+    kelas = db.Column(db.String(20), nullable=True)
 
 class Student(db.Model):
     __tablename__ = "students"

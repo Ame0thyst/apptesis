@@ -1,0 +1,387 @@
+{% extends "base.html" %} {% block title %}Data Guru{% endblock %} {% block nav
+%}
+<div class="hidden md:flex space-x-6">
+  <a
+    href="{{ url_for('admin.dashboard_admin') }}"
+    class="text-gray-600 hover:text-blue-600 font-medium transition pb-1"
+    >Beranda</a
+  >
+  <a
+    href="{{ url_for('admin.guru_list') }}"
+    class="text-blue-600 font-semibold border-b-2 border-blue-600 pb-1"
+    >Guru</a
+  >
+  <a
+    href="{{ url_for('admin.import_data') }}"
+    class="text-gray-600 hover:text-blue-600 font-medium transition pb-1"
+    >Import Data</a
+  >
+</div>
+{% endblock %} {% block content %}
+<!-- Header Section -->
+<div
+  class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4"
+>
+  <div>
+    <h1 class="text-3xl font-bold text-gray-800">Manajemen Guru</h1>
+    <p class="text-gray-500 mt-1">
+      Kelola data guru, tambah, edit, atau hapus akses.
+    </p>
+  </div>
+  <a
+    href="{{ url_for('admin.add_guru') }}"
+    class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-semibold flex items-center shadow-md hover:shadow-lg transition transform hover:-translate-y-0.5"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-5 w-5 mr-2"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M12 4v16m8-8H4"
+      />
+    </svg>
+    Tambah Guru Baru
+  </a>
+</div>
+
+<!-- Search & Filter Section -->
+<div class="bg-white rounded-2xl shadow-sm p-1 mb-8 border border-gray-100">
+  <form
+    method="GET"
+    action="{{ url_for('admin.guru_list') }}"
+    class="flex w-full items-center"
+  >
+    <div class="relative flex-grow group">
+      <div
+        class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 text-gray-400 group-focus-within:text-blue-500 transition"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+          />
+        </svg>
+      </div>
+      <input
+        type="text"
+        name="nama"
+        value="{{ filter_nama }}"
+        placeholder="Cari berdasarkan nama atau username..."
+        class="w-full pl-11 pr-4 py-4 rounded-xl border-none focus:ring-0 text-gray-700 placeholder-gray-400 bg-transparent"
+      />
+    </div>
+    <div class="pr-2 flex gap-2">
+      <button
+        type="submit"
+        class="px-6 py-2.5 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition shadow-sm font-semibold"
+      >
+        Cari
+      </button>
+      {% if filter_nama %}
+      <a
+        href="{{ url_for('admin.guru_list') }}"
+        class="px-4 py-2.5 text-sm text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition font-medium flex items-center"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-4 w-4 mr-1"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+        Reset
+      </a>
+      {% endif %}
+    </div>
+  </form>
+</div>
+
+<!-- Data Table Section -->
+<div
+  class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden"
+>
+  <div class="overflow-x-auto">
+    <table class="w-full text-left border-collapse">
+      <thead>
+        <tr class="bg-gray-50 border-b border-gray-100">
+          <th
+            class="py-5 px-6 font-semibold text-xs text-gray-500 uppercase tracking-wider"
+          >
+            Nama Guru
+          </th>
+          <th
+            class="py-5 px-6 font-semibold text-xs text-gray-500 uppercase tracking-wider"
+          >
+            NIP
+          </th>
+          <th
+            class="py-5 px-6 font-semibold text-xs text-gray-500 uppercase tracking-wider"
+          >
+            Username
+          </th>
+          <th
+            class="py-5 px-6 font-semibold text-xs text-gray-500 uppercase tracking-wider text-center"
+          >
+            Status
+          </th>
+          <th
+            class="py-5 px-6 font-semibold text-xs text-gray-500 uppercase tracking-wider text-center"
+          >
+            Aksi
+          </th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-50">
+        {% for guru in pagination.items %}
+        <tr class="hover:bg-blue-50/50 transition duration-150 group">
+          <td class="py-4 px-6">
+            <div class="flex items-center">
+              <div
+                class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-sm mr-4 shadow-sm group-hover:bg-blue-200 transition"
+              >
+                {{ guru.nama[:2].upper() }}
+              </div>
+              <div>
+                <div class="font-semibold text-gray-800">{{ guru.nama }}</div>
+                <div class="text-xs text-gray-400">Guru</div>
+              </div>
+            </div>
+          </td>
+          <td
+            class="py-4 px-6 text-sm text-gray-600 font-medium font-mono bg-gray-50/30 rounded-lg"
+          >
+            {{ guru.nisn or '-' }}
+          </td>
+          <td class="py-4 px-6 text-sm text-gray-600">
+            <span
+              class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800"
+            >
+              @{{ guru.username }}
+            </span>
+          </td>
+          <td class="py-4 px-6 text-center">
+            <span
+              class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"
+            >
+              Aktif
+            </span>
+          </td>
+          <td class="py-4 px-6 text-center">
+            <div
+              class="flex items-center justify-center gap-3 opacity-80 group-hover:opacity-100 transition"
+            >
+              <a
+                href="{{ url_for('admin.edit_guru', id=guru.id) }}"
+                class="text-blue-600 hover:text-blue-800 p-2 rounded-lg hover:bg-blue-100 transition"
+                title="Edit Data"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                  />
+                </svg>
+              </a>
+              <form
+                method="POST"
+                action="{{ url_for('admin.delete_guru', id=guru.id) }}"
+                onsubmit="return confirm('Apakah Anda yakin ingin menghapus data guru {{ guru.nama }}? Tindakan ini tidak dapat dibatalkan.');"
+                class="inline"
+              >
+                <button
+                  type="submit"
+                  class="text-red-500 hover:text-red-700 p-2 rounded-lg hover:bg-red-100 transition"
+                  title="Hapus Permanen"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                    />
+                  </svg>
+                </button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% if pagination.items|length == 0 %}
+  <div class="p-12 text-center">
+    <div class="inline-block p-4 rounded-full bg-gray-100 mb-4 text-gray-400">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-10 w-10"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+        />
+      </svg>
+    </div>
+    <h3 class="text-lg font-medium text-gray-900">Belum ada data guru</h3>
+    <p class="text-gray-500 mt-1">
+      Silakan tambahkan guru baru atau gunakan kata kunci pencarian lain.
+    </p>
+  </div>
+  {% endif %}
+
+  <!-- Pagination -->
+  {% if pagination.pages > 1 %}
+  <div
+    class="px-6 py-4 border-t border-gray-100 flex flex-col md:flex-row items-center justify-between bg-gray-50/50 gap-4"
+  >
+    <div class="text-sm text-gray-500">
+      Menampilkan
+      <span class="font-bold text-gray-800">{{ pagination.first }}</span> -
+      <span class="font-bold text-gray-800">{{ pagination.last }}</span> dari
+      <span class="font-bold text-gray-800">{{ pagination.total }}</span> data
+    </div>
+
+    <div class="flex items-center gap-1">
+      {% if pagination.has_prev %}
+      <a
+        href="{{ url_for('admin.guru_list', page=pagination.prev_num, nama=filter_nama) }}"
+        class="p-2 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 transition shadow-sm"
+        title="Sebelumnya"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </a>
+      {% else %}
+      <span
+        class="p-2 rounded-lg border border-gray-100 bg-gray-50 text-gray-300 cursor-not-allowed"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </span>
+      {% endif %}
+
+      <div class="hidden sm:flex gap-1 mx-2">
+        {% for p in pagination.iter_pages(left_edge=1, right_edge=1,
+        left_current=1, right_current=1) %} {% if p %} {% if p ==
+        pagination.page %}
+        <span
+          class="w-9 h-9 flex items-center justify-center rounded-lg bg-blue-600 text-white text-sm font-bold shadow-md"
+          >{{ p }}</span
+        >
+        {% else %}
+        <a
+          href="{{ url_for('admin.guru_list', page=p, nama=filter_nama) }}"
+          class="w-9 h-9 flex items-center justify-center rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 text-sm font-medium transition"
+          >{{ p }}</a
+        >
+        {% endif %} {% else %}
+        <span class="w-9 h-9 flex items-center justify-center text-gray-400"
+          >...</span
+        >
+        {% endif %} {% endfor %}
+      </div>
+
+      {% if pagination.has_next %}
+      <a
+        href="{{ url_for('admin.guru_list', page=pagination.next_num, nama=filter_nama) }}"
+        class="p-2 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 transition shadow-sm"
+        title="Selanjutnya"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </a>
+      {% else %}
+      <span
+        class="p-2 rounded-lg border border-gray-100 bg-gray-50 text-gray-300 cursor-not-allowed"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </span>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,178 +1,341 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Dashboard Admin - Riasec Explorer</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body { background:#f7fafc; }
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            grid-template-rows: repeat(2, 1fr);
-            gap: 24px;
-            margin-bottom: 32px;
-        }
-        .dashboard-card, .dashboard-pie {
-            border-radius: 16px;
-            box-shadow: 0 1px 6px #e7e7e7;
-            background: #fff;
-            padding: 32px 0 24px 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 140px;
-            border: 1.5px solid #f1f3f6;
-        }
-        .dashboard-pie {
-            grid-row: 1/3;
-            grid-column: 4/5;
-            padding: 32px 10px 24px 10px;
-        }
-        .dashboard-icon {
-            font-size: 2.8rem;
-            margin-bottom: 10px;
-        }
-        .dashboard-icon i {
-            color: #1687fa;
-        }
-        .pie-legend {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .pie-legend li {
-            display: flex;
-            align-items: center;
-            margin-bottom: 2px;
-            font-size: 15px;
-            font-weight: 500;
-        }
-        .pie-legend span {
-            display: inline-block;
-            width: 14px;
-            height: 14px;
-            margin-right: 8px;
-            border-radius: 50%;
-        }
-        @media (max-width: 991px) {
-            .dashboard-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
-            .dashboard-pie { grid-row: auto; grid-column: auto; }
-        }
-    </style>
-</head>
-<body>
-<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm p-3 mb-4">
-    <div class="container-fluid">
-        <a class="navbar-brand fw-bold" href="#">
-        <img src="{{ url_for('static', filename='img/logo.png') }}" height="35" style="margin-right:6px;">
-         Riasec Explorer
-         </a>
-        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-            <li class="nav-item"><a class="nav-link active" href="#">Beranda</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Data Siswa</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Data Guru</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Import Data</a></li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
-            </li>
-        </ul>
-    </div>
-</nav>
-<div class="container">
-    <!-- DASHBOARD CARD GRID -->
-    <div class="dashboard-grid">
-        <!-- Baris 1 -->
-        <div class="dashboard-card text-center">
-            <div class="fs-1 fw-bold">{{ total_siswa }}</div>
-            <div>Total Siswa</div>
-        </div>
-        <div class="dashboard-card text-center">
-            <div class="fs-1 fw-bold">{{ total_guru }}</div>
-            <div>Total Guru</div>
-        </div>
-        <div class="dashboard-card text-center">
-            <div class="fs-1 fw-bold">{{ siswa_sudah_tes }}</div>
-            <div>Siswa Sudah Tes</div>
-        </div>
-        <!-- PIE CHART -->
-        <div class="dashboard-pie text-center">
-            <canvas id="piePaket" width="110" height="110"></canvas>
-            <ul class="pie-legend mt-2">
-                <li><span style="background:#167bfa"></span> Paket 1 {{ paket1_pct }}%</li>
-                <li><span style="background:#3cb4fa"></span> Paket 2 {{ paket2_pct }}%</li>
-                <li><span style="background:#ef4040"></span> Paket 3 {{ paket3_pct }}%</li>
-            </ul>
-        </div>
-        <!-- Baris 2 -->
-        <div class="dashboard-card text-center">
-            <div class="dashboard-icon"><i class="bi bi-upload"></i></div>
-            Import Data
-        </div>
-        <div class="dashboard-card text-center">
-            <div class="dashboard-icon"><i class="bi bi-person"></i></div>
-            Kelola Data Siswa
-        </div>
-        <div class="dashboard-card text-center">
-            <div class="dashboard-icon"><i class="bi bi-file-earmark-text"></i></div>
-            Laporan
-        </div>
-        <!-- Kolom ke-4 baris kedua dikosongkan karena Pie Chart span 2 baris -->
-    </div>
-    <!-- Data Siswa Table -->
-    <div class="card p-3 mt-4" style="border-radius:18px">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <div class="fw-bold fs-5">Data Siswa</div>
-            <div>
-                <a href="{{ url_for('admin.download_csv') }}" class="btn btn-primary btn-sm">Download CSV</a>
-                <button class="btn btn-primary btn-sm" disabled>Download PDF</button>
-            </div>
-        </div>
-        <div class="table-responsive">
-        <table class="table table-borderless align-middle">
-            <thead class="table-light">
-                <tr>
-                    <th>Nama</th>
-                    <th>NISN</th>
-                    <th>Status Tes</th>
-                    <th>Paket Rekomendasi</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for s in data_siswa %}
-                <tr>
-                    <td>{{ s.nama }}</td>
-                    <td>{{ s.nisn }}</td>
-                    <td>{{ s.status_tes }}</td>
-                    <td>{{ s.paket }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        </div>
-    </div>
+{% extends "base.html" %}
+
+{% block title %}Dashboard Admin{% endblock %}
+
+{% block nav %}
+<div class="hidden md:flex space-x-6">
+    <a href="{{ url_for('admin.dashboard_admin') }}" class="text-blue-600 font-semibold border-b-2 border-blue-600 pb-1">Beranda</a>
+    <a href="{{ url_for('admin.guru_list') }}" class="text-gray-600 hover:text-blue-600 font-medium transition pb-1">Guru</a>
+    <a href="{{ url_for('admin.import_data') }}" class="text-gray-600 hover:text-blue-600 font-medium transition pb-1">Import Data</a>
 </div>
-<!-- Chart.js pie -->
+{% endblock %}
+
+{% block content %}
+<div class="mb-8 flex justify-between items-center">
+  <h1 class="text-3xl font-bold text-gray-800">Dashboard Admin</h1>
+  <div class="flex items-center space-x-4">
+    <div class="text-gray-600">
+      Halo Admin,
+      <span class="font-semibold">{{ current_user.username }}</span>
+    </div>
+    <a href="{{ url_for('auth.logout') }}" class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-semibold">
+      Logout
+    </a>
+  </div>
+</div>
+
+<!-- Statistik Cards -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+  <!-- Total Siswa -->
+  <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-blue-600">
+    <div class="flex justify-between items-start">
+      <div>
+        <p class="text-xs font-semibold text-gray-500 uppercase">Total Siswa</p>
+        <h3 class="text-2xl font-bold text-gray-800 mt-1">
+          {{ total_siswa }}
+        </h3>
+      </div>
+      <div class="p-2 bg-blue-50 rounded-lg text-blue-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Total Guru -->
+  <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-indigo-600">
+    <div class="flex justify-between items-start">
+      <div>
+        <p class="text-xs font-semibold text-gray-500 uppercase">Total Guru</p>
+        <h3 class="text-2xl font-bold text-gray-800 mt-1">
+          {{ total_guru }}
+        </h3>
+      </div>
+      <div class="p-2 bg-indigo-50 rounded-lg text-indigo-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sudah Tes -->
+  <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-green-500">
+    <div class="flex justify-between items-start">
+      <div>
+        <p class="text-xs font-semibold text-gray-500 uppercase">Sudah Tes</p>
+        <h3 class="text-2xl font-bold text-gray-800 mt-1">
+          {{ siswa_sudah_tes }}
+        </h3>
+      </div>
+      <div class="p-2 bg-green-50 rounded-lg text-green-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Belum Tes -->
+  <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-yellow-500">
+    <div class="flex justify-between items-start">
+      <div>
+        <p class="text-xs font-semibold text-gray-500 uppercase">Belum Tes</p>
+        <h3 class="text-2xl font-bold text-gray-800 mt-1">
+          {{ siswa_belum_tes }}
+        </h3>
+      </div>
+      <div class="p-2 bg-yellow-50 rounded-lg text-yellow-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Chart Section -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+  <div class="lg:col-span-2 bg-white rounded-xl shadow-sm p-6">
+    <h3 class="text-lg font-bold text-gray-800 mb-4">
+      Distribusi Paket Rekomendasi
+    </h3>
+    <div class="h-64">
+      <canvas id="paketChart"></canvas>
+    </div>
+  </div>
+  <div class="bg-white rounded-xl shadow-sm p-6">
+    <h3 class="text-lg font-bold text-gray-800 mb-4">Status Pengerjaan</h3>
+    <div class="h-64 flex justify-center">
+      <canvas id="statusChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- Filter Section -->
+<div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+  <h3 class="text-lg font-bold text-gray-800 mb-4">Filter Data Siswa</h3>
+  <form method="GET" action="{{ url_for('admin.dashboard_admin') }}">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Nama Siswa</label>
+        <input type="text" name="nama" value="{{ filters.nama }}" placeholder="Cari nama..." 
+               class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 transition text-sm">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Kelas</label>
+        <input type="text" name="kelas" value="{{ filters.kelas }}" placeholder="Contoh: XII-1" 
+               class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 transition text-sm">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Kode RIASEC</label>
+        <input type="text" name="riasec" value="{{ filters.riasec }}" placeholder="Contoh: R, RIA" 
+               class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 transition text-sm">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Paket Rekomendasi</label>
+        <select name="paket" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 transition text-sm">
+          <option value="">Semua Paket</option>
+          <option value="Paket 1" {% if filters.paket == 'Paket 1' %}selected{% endif %}>Paket 1</option>
+          <option value="Paket 2" {% if filters.paket == 'Paket 2' %}selected{% endif %}>Paket 2</option>
+          <option value="Paket 3" {% if filters.paket == 'Paket 3' %}selected{% endif %}>Paket 3</option>
+        </select>
+      </div>
+    </div>
+    <div class="mt-4 flex justify-end gap-2">
+      <a href="{{ url_for('admin.dashboard_admin') }}" class="px-4 py-2 text-sm text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition font-medium">Reset</a>
+      <button type="submit" class="px-4 py-2 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition shadow-sm font-semibold">
+        Terapkan Filter
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- Data Table Section -->
+<div class="bg-white rounded-xl shadow-sm overflow-hidden">
+  <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+    <h3 class="text-lg font-bold text-gray-800">Data Siswa</h3>
+    <a href="{{ url_for('admin.download_csv') }}"
+      class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center transition"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+      </svg>
+      Export CSV
+    </a>
+  </div>
+  <div class="overflow-x-auto">
+    <table class="w-full text-left border-collapse">
+      <thead>
+        <tr class="bg-gray-50 text-gray-600 text-sm uppercase tracking-wider">
+          <th class="py-4 px-6 font-semibold">Nama Siswa</th>
+          <th class="py-4 px-6 font-semibold">NISN</th>
+          <th class="py-4 px-6 font-semibold">Kelas</th>
+          <th class="py-4 px-6 font-semibold">Kode RIASEC</th>
+          <th class="py-4 px-6 font-semibold">Paket Rekomendasi</th>
+          <!-- Action column removed for admin since no detail view yet -->
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-100">
+        {% for siswa in siswa_list %}
+        <tr class="hover:bg-gray-50 transition">
+          <td class="py-4 px-6 font-medium text-gray-800">{{ siswa.nama }}</td>
+          <td class="py-4 px-6 text-gray-600">{{ siswa.nisn }}</td>
+          <td class="py-4 px-6 text-gray-600">{{ siswa.kelas }}</td>
+          <td class="py-4 px-6">
+            {% if siswa.kode_riasec != "-" %}
+            <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-bold">{{ siswa.kode_riasec }}</span>
+            {% else %}
+            <span class="text-gray-400">-</span>
+            {% endif %}
+          </td>
+          <td class="py-4 px-6">
+            {% if siswa.paket_rekomendasi == "Paket 1" %}
+            <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs font-bold">Paket 1</span>
+            {% elif siswa.paket_rekomendasi == "Paket 2" %}
+            <span class="bg-teal-100 text-teal-800 px-2 py-1 rounded text-xs font-bold">Paket 2</span>
+            {% elif siswa.paket_rekomendasi == "Paket 3" %}
+            <span class="bg-orange-100 text-orange-800 px-2 py-1 rounded text-xs font-bold">Paket 3</span>
+            {% else %}
+            <span class="text-gray-400">-</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% if siswa_list|length == 0 %}
+  <div class="p-8 text-center text-gray-500">Belum ada data siswa.</div>
+  {% endif %}
+
+  <!-- Pagination -->
+  {% if pagination.pages > 1 %}
+  <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50">
+    <div class="text-sm text-gray-500">
+      Menampilkan <span class="font-bold">{{ pagination.first }}</span> sampai <span class="font-bold">{{ pagination.last }}</span> dari <span class="font-bold">{{ pagination.total }}</span> siswa
+    </div>
+    <div class="flex gap-2">
+      {% if pagination.has_prev %}
+      <a href="{{ url_for('admin.dashboard_admin', page=pagination.prev_num, **filters) }}" 
+         class="px-3 py-1 rounded-md border border-gray-300 bg-white hover:bg-gray-50 text-gray-600 text-sm font-medium transition">
+         Previous
+      </a>
+      {% else %}
+      <span class="px-3 py-1 rounded-md border border-gray-200 bg-gray-50 text-gray-400 text-sm font-medium cursor-not-allowed">
+        Previous
+      </span>
+      {% endif %}
+
+      <div class="hidden sm:flex gap-1">
+      {% for p in pagination.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=1) %}
+        {% if p %}
+          {% if p == pagination.page %}
+          <span class="px-3 py-1 rounded-md bg-blue-600 text-white text-sm font-bold shadow-sm">{{ p }}</span>
+          {% else %}
+          <a href="{{ url_for('admin.dashboard_admin', page=p, **filters) }}" 
+             class="px-3 py-1 rounded-md border border-gray-300 bg-white hover:bg-gray-50 text-gray-600 text-sm font-medium transition">{{ p }}</a>
+          {% endif %}
+        {% else %}
+          <span class="px-2 text-gray-400 flex items-center">...</span>
+        {% endif %}
+      {% endfor %}
+      </div>
+
+      {% if pagination.has_next %}
+      <a href="{{ url_for('admin.dashboard_admin', page=pagination.next_num, **filters) }}" 
+         class="px-3 py-1 rounded-md border border-gray-300 bg-white hover:bg-gray-50 text-gray-600 text-sm font-medium transition">
+         Next
+      </a>
+      {% else %}
+      <span class="px-3 py-1 rounded-md border border-gray-200 bg-gray-50 text-gray-400 text-sm font-medium cursor-not-allowed">
+        Next
+      </span>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+<!-- Chart JS Initialization -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-const ctx = document.getElementById('piePaket').getContext('2d');
-const pieChart = new Chart(ctx, {
-    type: 'pie',
+  // Mengambil data dari server (Flask) dan mengubahnya menjadi format JavaScript yang valid
+  const distribusiData = JSON.parse("{{ distribusi | tojson | safe }}");
+  const siswaSudahTes = Number("{{ siswa_sudah_tes }}");
+  const siswaBelumTes = Number("{{ siswa_belum_tes }}");
+
+  // Data Distribusi Paket
+  const ctxPaket = document.getElementById("paketChart").getContext("2d");
+  new Chart(ctxPaket, {
+    type: "bar",
     data: {
-        labels: ['Paket 1', 'Paket 2', 'Paket 3'],
-        datasets: [{
-            data: [{{ paket1_pct }}, {{ paket2_pct }}, {{ paket3_pct }}],
-            backgroundColor: ['#167bfa', '#3cb4fa', '#ef4040'],
-            borderWidth: 0
-        }]
+      labels: ["Paket 1", "Paket 2", "Paket 3"],
+      datasets: [
+        {
+          label: "Jumlah Siswa",
+          data: distribusiData,
+          backgroundColor: [
+            "rgba(147, 51, 234, 0.7)", // Purple
+            "rgba(20, 184, 166, 0.7)", // Teal
+            "rgba(249, 115, 22, 0.7)", // Orange
+          ],
+          borderColor: [
+            "rgb(147, 51, 234)",
+            "rgb(20, 184, 166)",
+            "rgb(249, 115, 22)",
+          ],
+          borderWidth: 1,
+          borderRadius: 6,
+        },
+      ],
     },
     options: {
-        plugins: { legend: { display: false } }
-    }
-});
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            stepSize: 1,
+          },
+        },
+      },
+      plugins: {
+        legend: {
+          display: false,
+        },
+      },
+    },
+  });
+
+  // Data Status Pengerjaan
+  const ctxStatus = document.getElementById("statusChart").getContext("2d");
+  new Chart(ctxStatus, {
+    type: "doughnut",
+    data: {
+      labels: ["Sudah Tes", "Belum Tes"],
+      datasets: [
+        {
+          data: [siswaSudahTes, siswaBelumTes],
+          backgroundColor: [
+            "rgba(34, 197, 94, 0.8)", // Green
+            "rgba(234, 179, 8, 0.8)", // Yellow
+          ],
+          borderWidth: 0,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: "bottom",
+        },
+      },
+    },
+  });
 </script>
-<!-- Bootstrap icons CDN -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-</body>
-</html>
+{% endblock %}

@@ -175,7 +175,7 @@ DROP TABLE IF EXISTS `students`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `students` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `nisn` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
+  `nisn` varchar(30) COLLATE utf8mb4_general_ci NOT NULL,
   `nama` varchar(150) COLLATE utf8mb4_general_ci NOT NULL,
   `kelas` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `id_user` int DEFAULT NULL,
@@ -208,8 +208,12 @@ CREATE TABLE `users` (
   `username` varchar(150) COLLATE utf8mb4_general_ci NOT NULL,
   `password` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
   `role` enum('admin','guru','siswa') COLLATE utf8mb4_general_ci NOT NULL,
+  `nisn` varchar(30) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `nama` varchar(150) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `kelas` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `username` (`username`)
+  UNIQUE KEY `username` (`username`),
+  UNIQUE KEY `nisn` (`nisn`)
 ) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -219,7 +223,41 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'admin','admin123','admin'),(2,'gurubk','guru123','guru'),(3,'siswa1','siswa123','siswa'),(4,'siswa2','siswa456','siswa'),(5,'siswa3','123456','siswa'),(6,'siswa4','123456','siswa'),(7,'siswa5','123456','siswa'),(8,'siswa6','123456','siswa'),(9,'siswa7','123456','siswa'),(10,'siswa8','123456','siswa'),(11,'siswa9','123456','siswa'),(12,'siswa10','123456','siswa'),(13,'siswa11','123456','siswa'),(14,'siswa12','123456','siswa'),(15,'siswa13','123456','siswa'),(16,'siswa14','123456','siswa'),(17,'siswa15','123456','siswa'),(18,'siswa16','123456','siswa'),(19,'siswa17','123456','siswa'),(20,'siswa18','123456','siswa'),(21,'siswa19','123456','siswa'),(22,'siswa20','123456','siswa'),(23,'siswa21','123456','siswa'),(24,'siswa22','123456','siswa'),(25,'siswa23','123456','siswa'),(26,'siswa24','123456','siswa'),(27,'siswa25','123456','siswa'),(28,'siswa26','123456','siswa'),(29,'siswa27','123456','siswa'),(30,'siswa28','123456','siswa'),(31,'siswa29','123456','siswa'),(32,'siswa30','123456','siswa');
+INSERT INTO `users` (`id`,`username`,`password`,`role`,`nisn`,`nama`,`kelas`) VALUES
+(1,'admin','admin123','admin','10000001','Admin','X-1'),
+(2,'gurubk','guru123','guru','10000002','Guru BK','SMA3'),
+(34,'kepsek','kepsek','guru','1102391','Kepala Sekolah','SMA3'),
+(3,'siswa1','siswa123','siswa','10000003','Siswa 1','XII-3'),
+(4,'siswa2','siswa456','siswa','10000004','Siswa 2','X-4'),
+(5,'siswa3','123456','siswa','10000005','Siswa 3','XI-5'),
+(6,'siswa4','123456','siswa','10000006','Siswa 4','XII-6'),
+(7,'siswa5','123456','siswa','10000007','Siswa 5','X-1'),
+(8,'siswa6','123456','siswa','10000008','Siswa 6','XI-2'),
+(9,'siswa7','123456','siswa','10000009','Siswa 7','XII-3'),
+(10,'siswa8','123456','siswa','10000010','Siswa 8','X-4'),
+(11,'siswa9','123456','siswa','10000011','Siswa 9','XI-5'),
+(12,'siswa10','123456','siswa','10000012','Siswa 10','XII-6'),
+(13,'siswa11','123456','siswa','10000013','Siswa 11','X-1'),
+(14,'siswa12','123456','siswa','10000014','Siswa 12','XI-2'),
+(15,'siswa13','123456','siswa','10000015','Siswa 13','XII-3'),
+(16,'siswa14','123456','siswa','10000016','Siswa 14','X-4'),
+(17,'siswa15','123456','siswa','10000017','Siswa 15','XI-5'),
+(18,'siswa16','123456','siswa','10000018','Siswa 16','XII-6'),
+(19,'siswa17','123456','siswa','10000019','Siswa 17','X-1'),
+(20,'siswa18','123456','siswa','10000020','Siswa 18','XI-2'),
+(21,'siswa19','123456','siswa','10000021','Siswa 19','XII-3'),
+(22,'siswa20','123456','siswa','10000022','Siswa 20','X-4'),
+(23,'siswa21','123456','siswa','10000023','Siswa 21','XI-5'),
+(24,'siswa22','123456','siswa','10000024','Siswa 22','XII-6'),
+(25,'siswa23','123456','siswa','10000025','Siswa 23','X-1'),
+(26,'siswa24','123456','siswa','10000026','Siswa 24','XI-2'),
+(27,'siswa25','123456','siswa','10000027','Siswa 25','XII-3'),
+(28,'siswa26','123456','siswa','10000028','Siswa 26','X-4'),
+(29,'siswa27','123456','siswa','10000029','Siswa 27','XI-5'),
+(30,'siswa28','123456','siswa','10000030','Siswa 28','XII-6'),
+(31,'siswa29','123456','siswa','10000031','Siswa 29','X-1'),
+(32,'siswa30','123456','siswa','10000032','Siswa 30','XI-2'),
+(33,'Gilang','123456','siswa','210401227','Gilang Wiko','XII-2');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
