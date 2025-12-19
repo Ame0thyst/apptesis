@@ -68,6 +68,7 @@ class Recommendation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     id_student = db.Column(db.Integer, db.ForeignKey('students.id'), nullable=False)
     paket_prediksi = db.Column(db.String(50), nullable=False)
+    probabilitas = db.Column(db.Float, nullable=True)
     # Optional: waktu pembuatan (jika ingin tracking)
     # created_at = db.Column(db.DateTime, default=db.func.now())
 

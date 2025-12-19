@@ -368,11 +368,13 @@ def hasil_rekomendasi():
         rekom = Recommendation.query.filter_by(id_student=student.id).first()
         if rekom:
             rekom.paket_prediksi = paket_label
+            rekom.probabilitas = paket_confidence
             # rekom.timestamp = datetime.now() # jika punya kolom timestamp
         else:
             rekom = Recommendation(
                 id_student=student.id,
-                paket_prediksi=paket_label
+                paket_prediksi=paket_label,
+                probabilitas=paket_confidence
                 # timestamp=datetime.now() # jika punya kolom timestamp
             )
             db.session.add(rekom)
