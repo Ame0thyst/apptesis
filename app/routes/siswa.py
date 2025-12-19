@@ -363,6 +363,81 @@ def hasil_rekomendasi():
             paket_confidence = p
             break
 
+    career_map_combo = {
+        'RIA': [
+            {'title': 'Arsitek', 'riasec': 'RIA', 'desc': 'Merancang bangunan dan ruang, memadukan kreativitas dan analisis.'},
+            {'title': 'UI/UX Designer', 'riasec': 'RIA', 'desc': 'Mendesain pengalaman pengguna dengan riset dan estetika.'},
+            {'title': 'Engineer Produk', 'riasec': 'RIA', 'desc': 'Mengembangkan produk dengan pendekatan teknis dan kreatif.'}
+        ],
+        'RIS': [
+            {'title': 'Insinyur Sipil', 'riasec': 'RIS', 'desc': 'Mendesain dan membangun infrastruktur dengan orientasi teknis.'},
+            {'title': 'Teknisi Konstruksi', 'riasec': 'RIS', 'desc': 'Implementasi teknis di lapangan untuk proyek konstruksi.'}
+        ],
+        'SEC': [
+            {'title': 'Manajer Operasional', 'riasec': 'SEC', 'desc': 'Mengelola proses, tim, dan efisiensi organisasi.'},
+            {'title': 'Konsultan Bisnis', 'riasec': 'SEC', 'desc': 'Memberi saran strategis berbasis data dan proses.'}
+        ],
+        'IEC': [
+            {'title': 'Data Analyst', 'riasec': 'IEC', 'desc': 'Menganalisis data untuk insight dan pengambilan keputusan.'},
+            {'title': 'Quality Assurance', 'riasec': 'IEC', 'desc': 'Menjaga mutu proses dan produk dengan analisis sistematis.'}
+        ],
+        'ASI': [
+            {'title': 'Animator', 'riasec': 'ASI', 'desc': 'Menciptakan animasi dengan kreativitas dan ketelitian.'},
+            {'title': 'Desainer Grafis', 'riasec': 'ASI', 'desc': 'Mengkomunikasikan ide visual secara efektif.'}
+        ]
+    }
+    career_map_single = {
+        'R': [
+            {'title': 'Teknisi Mesin', 'riasec': 'R', 'desc': 'Perawatan dan perakitan mesin dan perangkat.'},
+            {'title': 'Mekanik Otomotif', 'riasec': 'R', 'desc': 'Diagnosa dan perbaikan kendaraan.'},
+            {'title': 'Ahli Konstruksi', 'riasec': 'R', 'desc': 'Pelaksanaan teknis struktur bangunan.'}
+        ],
+        'I': [
+            {'title': 'Peneliti', 'riasec': 'I', 'desc': 'Eksplorasi ilmiah dan eksperimen.'},
+            {'title': 'Data Scientist', 'riasec': 'I', 'desc': 'Model dan analisis data kompleks.'},
+            {'title': 'Analis Laboratorium', 'riasec': 'I', 'desc': 'Pengujian dan validasi sampel.'}
+        ],
+        'A': [
+            {'title': 'Arsitek', 'riasec': 'A', 'desc': 'Perancangan bangunan estetis dan fungsional.'},
+            {'title': 'Animator', 'riasec': 'A', 'desc': 'Pembuatan animasi dan visual kreatif.'},
+            {'title': 'UI/UX Designer', 'riasec': 'A', 'desc': 'Desain antarmuka dan pengalaman pengguna.'}
+        ],
+        'S': [
+            {'title': 'Guru', 'riasec': 'S', 'desc': 'Mendidik dan membimbing peserta didik.'},
+            {'title': 'Konselor', 'riasec': 'S', 'desc': 'Membantu pemecahan masalah personal.'},
+            {'title': 'Perawat', 'riasec': 'S', 'desc': 'Merawat pasien dengan empati dan ketelatenan.'}
+        ],
+        'E': [
+            {'title': 'Pengusaha', 'riasec': 'E', 'desc': 'Membangun dan mengembangkan bisnis.'},
+            {'title': 'Marketing Strategist', 'riasec': 'E', 'desc': 'Menyusun strategi pemasaran dan pertumbuhan.'},
+            {'title': 'Product Manager', 'riasec': 'E', 'desc': 'Mengelola siklus hidup produk dan tim lintas fungsi.'}
+        ],
+        'C': [
+            {'title': 'Akuntan', 'riasec': 'C', 'desc': 'Pengelolaan laporan keuangan dan kepatuhan.'},
+            {'title': 'Auditor', 'riasec': 'C', 'desc': 'Pemeriksaan prosedur dan keuangan organisasi.'},
+            {'title': 'Administrasi', 'riasec': 'C', 'desc': 'Pengelolaan dokumen dan proses rutin.'}
+        ]
+    }
+    def suggest_careers(code):
+        code = (code or '').upper()
+        seen = set()
+        result = []
+        if code in career_map_combo:
+            for item in career_map_combo[code]:
+                key = item['title']
+                if key not in seen:
+                    result.append(item)
+                    seen.add(key)
+        for ch in code:
+            if ch in career_map_single:
+                for item in career_map_single[ch]:
+                    key = item['title']
+                    if key not in seen:
+                        result.append(item)
+                        seen.add(key)
+        return result[:8]
+    careers = suggest_careers(top3)
+
     # --- SIMPAN REKOMENDASI KE DATABASE TANPA ALASAN ---
     if student:
         rekom = Recommendation.query.filter_by(id_student=student.id).first()
@@ -392,5 +467,6 @@ def hasil_rekomendasi():
         alasan=alasan,
         semua_paket=semua_paket,
         paket_confidence=paket_confidence,
-        paket_proba_items=paket_proba_items
+        paket_proba_items=paket_proba_items,
+        careers=careers
     )
