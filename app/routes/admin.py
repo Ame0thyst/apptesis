@@ -1,6 +1,6 @@
-from flask import Blueprint, render_template, redirect, url_for, send_file, request, flash
+from flask import Blueprint, render_template, redirect, url_for, send_file, request, flash, jsonify
 from flask_login import login_required, current_user
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 from app import db
 from app.models import User, Student, RiasecResult, Recommendation
 from sqlalchemy import func
@@ -91,14 +91,22 @@ def dashboard_admin():
         
         kode_riasec = res.top3 if res else "-"
         paket = rec.paket_prediksi if rec else "-"
-        
+        is_default_password = False
+        try:
+            if nisn_siswa and check_password_hash(u.password, nisn_siswa):
+                is_default_password = True
+        except Exception:
+            if nisn_siswa and u.password == nisn_siswa:
+                is_default_password = True
         siswa_list.append({
             "id": u.id,
             "nama": nama_siswa,
             "nisn": nisn_siswa,
             "kelas": kelas_siswa,
             "kode_riasec": kode_riasec,
-            "paket_rekomendasi": paket
+            "paket_rekomendasi": paket,
+            "username": u.username,
+            "is_default_password": is_default_password
         })
 
     return render_template(
@@ -410,6 +418,58 @@ def download_template():
         as_attachment=True,
         download_name='template_import_siswa.xlsx'
     )
+
+@admin_bp.route('/admin/user/<int:user_id>/password-info')
+@login_required
+def password_info(user_id):
+    if current_user.role != 'admin':
+        return redirect(url_for('auth.login'))
+    u = User.query.get_or_404(user_id)
+    if u.role != 'siswa':
+        return jsonify({"error": "invalid_role"}), 400
+    nisn = u.nisn or ""
+    is_default = False
+    try:
+        if nisn and check_password_hash(u.password, nisn):
+            is_default = True
+    except Exception:
+        if nisn and u.password == nisn:
+            is_default = True
+    return jsonify({
+        "username": u.username,
+        "is_default": is_default,
+        "default_password": nisn if is_default else None
+    })
+
+@admin_bp.route('/admin/user/<int:user_id>/reset-password-default', methods=['POST'])
+@login_required
+def reset_password_default(user_id):
+    if current_user.role != 'admin':
+        return redirect(url_for('auth.login'))
+    u = User.query.get_or_404(user_id)
+    if u.role != 'siswa':
+        return jsonify({"error": "invalid_role"}), 400
+    if not u.nisn:
+        return jsonify({"error": "nisn_missing"}), 400
+    u.password = generate_password_hash(u.nisn)
+    db.session.commit()
+    return jsonify({"success": True, "password": u.nisn})
+
+@admin_bp.route('/admin/user/<int:user_id>/generate-temp-password', methods=['POST'])
+@login_required
+def generate_temp_password(user_id):
+    if current_user.role != 'admin':
+        return redirect(url_for('auth.login'))
+    import secrets
+    import string
+    u = User.query.get_or_404(user_id)
+    if u.role != 'siswa':
+        return jsonify({"error": "invalid_role"}), 400
+    alphabet = string.ascii_letters + string.digits
+    temp = ''.join(secrets.choice(alphabet) for _ in range(10))
+    u.password = generate_password_hash(temp)
+    db.session.commit()
+    return jsonify({"success": True, "password": temp})
 
 # Optional: Download CSV
 @admin_bp.route('/admin/download-csv')

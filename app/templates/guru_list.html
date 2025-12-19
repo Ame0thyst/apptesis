@@ -1,21 +1,142 @@
 {% extends "base.html" %} {% block title %}Data Guru{% endblock %} {% block nav
 %}
-<div class="hidden md:flex space-x-6">
-  <a
-    href="{{ url_for('admin.dashboard_admin') }}"
-    class="text-gray-600 hover:text-blue-600 font-medium transition pb-1"
-    >Beranda</a
-  >
-  <a
-    href="{{ url_for('admin.guru_list') }}"
-    class="text-blue-600 font-semibold border-b-2 border-blue-600 pb-1"
-    >Guru</a
-  >
-  <a
-    href="{{ url_for('admin.import_data') }}"
-    class="text-gray-600 hover:text-blue-600 font-medium transition pb-1"
-    >Import Data</a
-  >
+<div class="w-full flex items-center justify-between">
+  <div class="hidden md:flex items-center bg-gray-100 rounded-xl p-1">
+    <a
+      href="{{ url_for('admin.dashboard_admin') }}"
+      class="flex items-center gap-2 px-4 py-2 rounded-lg text-gray-700 hover:text-blue-600 hover:bg-white hover:shadow-sm transition"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M3 12l2-2m0 0l7-7 7 7M13 5v6h6"
+        />
+      </svg>
+      Beranda
+    </a>
+    <a
+      href="{{ url_for('admin.guru_list') }}"
+      class="flex items-center gap-2 px-4 py-2 rounded-lg bg-white shadow-sm text-blue-600 font-semibold"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M17 20h5v-2a3 3 0 00-5.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M12 12a5 5 0 100-10 5 5 0 000 10z"
+        />
+      </svg>
+      Guru
+    </a>
+    <a
+      href="{{ url_for('admin.import_data') }}"
+      class="flex items-center gap-2 px-4 py-2 rounded-lg text-gray-700 hover:text-blue-600 hover:bg-white hover:shadow-sm transition"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-6-8l-4-4m0 0L8 8m4-4v12"
+        />
+      </svg>
+      Import Data
+    </a>
+  </div>
+  <div class="flex items-center gap-4">
+    <!-- Profile Dropdown -->
+    <div class="relative group">
+      <button
+        class="flex items-center gap-3 pl-3 pr-1 py-1 rounded-full hover:bg-gray-100 transition duration-200 group-hover:bg-white group-hover:shadow-sm border border-transparent group-hover:border-gray-200"
+      >
+        <div class="hidden sm:flex flex-col items-end mr-1">
+          <span class="text-xs text-gray-500 font-medium">Halo, Admin</span>
+          <span class="text-sm font-bold text-gray-800 leading-none"
+            >{{ current_user.username }}</span
+          >
+        </div>
+        <div
+          class="h-10 w-10 rounded-full bg-gradient-to-br from-blue-600 to-blue-700 text-white flex items-center justify-center font-bold text-lg shadow-md ring-2 ring-white group-hover:ring-blue-50 transition"
+        >
+          {{ current_user.username[:1].upper() }}
+        </div>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-4 w-4 text-gray-400 group-hover:text-blue-600 transition"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 9l-7 7-7-7"
+          />
+        </svg>
+      </button>
+
+      <!-- Dropdown Menu -->
+      <div
+        class="absolute right-0 mt-2 w-56 bg-white border border-gray-100 rounded-2xl shadow-xl transform scale-95 opacity-0 invisible group-hover:scale-100 group-hover:opacity-100 group-hover:visible transition-all duration-200 origin-top-right z-50 overflow-hidden"
+      >
+        <div class="px-5 py-4 bg-gray-50 border-b border-gray-100">
+          <p class="text-xs text-gray-500 font-medium uppercase tracking-wider">
+            Signed in as
+          </p>
+          <p class="text-sm font-bold text-gray-900 truncate">
+            {{ current_user.username }}
+          </p>
+        </div>
+        <div class="p-2">
+          <a
+            href="{{ url_for('auth.logout') }}"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-700 hover:text-red-600 hover:bg-red-50 transition group/item"
+          >
+            <div
+              class="p-1.5 bg-gray-100 rounded-lg text-gray-500 group-hover/item:text-red-500 group-hover/item:bg-white transition"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                />
+              </svg>
+            </div>
+            <span class="font-medium">Logout</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %} {% block content %}
 <!-- Header Section -->

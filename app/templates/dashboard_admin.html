@@ -3,15 +3,67 @@
 {% block title %}Dashboard Admin{% endblock %}
 
 {% block nav %}
-<div class="hidden md:flex space-x-6">
-    <a href="{{ url_for('admin.dashboard_admin') }}" class="text-blue-600 font-semibold border-b-2 border-blue-600 pb-1">Beranda</a>
-    <a href="{{ url_for('admin.guru_list') }}" class="text-gray-600 hover:text-blue-600 font-medium transition pb-1">Guru</a>
-    <a href="{{ url_for('admin.import_data') }}" class="text-gray-600 hover:text-blue-600 font-medium transition pb-1">Import Data</a>
-</div>
+<div class="w-full flex items-center justify-between">
+  <div class="hidden md:flex items-center bg-gray-100 rounded-xl p-1">
+    <a href="{{ url_for('admin.dashboard_admin') }}" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-white shadow-sm text-blue-600 font-semibold">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M13 5v6h6" />
+      </svg>
+      Beranda
+    </a>
+    <a href="{{ url_for('admin.guru_list') }}" class="flex items-center gap-2 px-4 py-2 rounded-lg text-gray-700 hover:text-blue-600 hover:bg-white hover:shadow-sm transition">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M12 12a5 5 0 100-10 5 5 0 000 10z" />
+      </svg>
+      Guru
+    </a>
+    <a href="{{ url_for('admin.import_data') }}" class="flex items-center gap-2 px-4 py-2 rounded-lg text-gray-700 hover:text-blue-600 hover:bg-white hover:shadow-sm transition">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-6-8l-4-4m0 0L8 8m4-4v12" />
+      </svg>
+      Import Data
+    </a>
+  </div>
+  <div class="flex items-center gap-4">
+    <!-- Profile Dropdown -->
+    <div class="relative group">
+      <button class="flex items-center gap-3 pl-3 pr-1 py-1 rounded-full hover:bg-gray-100 transition duration-200 group-hover:bg-white group-hover:shadow-sm border border-transparent group-hover:border-gray-200">
+        <div class="hidden sm:flex flex-col items-end mr-1">
+          <span class="text-xs text-gray-500 font-medium">Halo, Admin</span>
+          <span class="text-sm font-bold text-gray-800 leading-none">{{ current_user.username }}</span>
+        </div>
+        <div class="h-10 w-10 rounded-full bg-gradient-to-br from-blue-600 to-blue-700 text-white flex items-center justify-center font-bold text-lg shadow-md ring-2 ring-white group-hover:ring-blue-50 transition">
+          {{ current_user.username[:1].upper() }}
+        </div>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 group-hover:text-blue-600 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      <!-- Dropdown Menu -->
+      <div class="absolute right-0 mt-2 w-56 bg-white border border-gray-100 rounded-2xl shadow-xl transform scale-95 opacity-0 invisible group-hover:scale-100 group-hover:opacity-100 group-hover:visible transition-all duration-200 origin-top-right z-50 overflow-hidden">
+        <div class="px-5 py-4 bg-gray-50 border-b border-gray-100">
+          <p class="text-xs text-gray-500 font-medium uppercase tracking-wider">Signed in as</p>
+          <p class="text-sm font-bold text-gray-900 truncate">{{ current_user.username }}</p>
+        </div>
+        <div class="p-2">
+          <a href="{{ url_for('auth.logout') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-700 hover:text-red-600 hover:bg-red-50 transition group/item">
+            <div class="p-1.5 bg-gray-100 rounded-lg text-gray-500 group-hover/item:text-red-500 group-hover/item:bg-white transition">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+            </div>
+            <span class="font-medium">Logout</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
 {% endblock %}
 
 {% block content %}
-<div class="mb-8 flex justify-between items-center">
+<!-- <div class="mb-8 flex justify-between items-center">
   <h1 class="text-3xl font-bold text-gray-800">Dashboard Admin</h1>
   <div class="flex items-center space-x-4">
     <div class="text-gray-600">
@@ -22,7 +74,7 @@
       Logout
     </a>
   </div>
-</div>
+</div> -->
 
 <!-- Statistik Cards -->
 <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
@@ -116,26 +168,90 @@
 <!-- Filter Section -->
 <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
   <h3 class="text-lg font-bold text-gray-800 mb-4">Filter Data Siswa</h3>
+  
+  {% if filters.nama or filters.kelas or filters.riasec or filters.paket %}
+  <div class="mb-4 flex flex-wrap gap-2">
+    {% if filters.nama %}
+    <a href="{{ url_for('admin.dashboard_admin') }}?kelas={{ filters.kelas }}&riasec={{ filters.riasec }}&paket={{ filters.paket }}" class="inline-flex items-center gap-2 px-2.5 py-1.5 bg-blue-50 text-blue-700 rounded-full text-xs">
+      Nama: {{ filters.nama }}
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </a>
+    {% endif %}
+    {% if filters.kelas %}
+    <a href="{{ url_for('admin.dashboard_admin') }}?nama={{ filters.nama }}&riasec={{ filters.riasec }}&paket={{ filters.paket }}" class="inline-flex items-center gap-2 px-2.5 py-1.5 bg-indigo-50 text-indigo-700 rounded-full text-xs">
+      Kelas: {{ filters.kelas }}
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </a>
+    {% endif %}
+    {% if filters.riasec %}
+    <a href="{{ url_for('admin.dashboard_admin') }}?nama={{ filters.nama }}&kelas={{ filters.kelas }}&paket={{ filters.paket }}" class="inline-flex items-center gap-2 px-2.5 py-1.5 bg-purple-50 text-purple-700 rounded-full text-xs">
+      RIASEC: {{ filters.riasec }}
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </a>
+    {% endif %}
+    {% if filters.paket %}
+    <a href="{{ url_for('admin.dashboard_admin') }}?nama={{ filters.nama }}&kelas={{ filters.kelas }}&riasec={{ filters.riasec }}" class="inline-flex items-center gap-2 px-2.5 py-1.5 bg-teal-50 text-teal-700 rounded-full text-xs">
+      Paket: {{ filters.paket }}
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </a>
+    {% endif %}
+  </div>
+  {% endif %}
+  
   <form method="GET" action="{{ url_for('admin.dashboard_admin') }}">
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-      <div>
+      <div class="relative">
         <label class="block text-sm font-medium text-gray-700 mb-1">Nama Siswa</label>
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none mt-6">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+        </div>
         <input type="text" name="nama" value="{{ filters.nama }}" placeholder="Cari nama..." 
-               class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 transition text-sm">
+               class="w-full pl-9 rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 transition text-sm">
       </div>
-      <div>
+      <div class="relative">
         <label class="block text-sm font-medium text-gray-700 mb-1">Kelas</label>
-        <input type="text" name="kelas" value="{{ filters.kelas }}" placeholder="Contoh: XII-1" 
-               class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 transition text-sm">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none mt-6">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/>
+          </svg>
+        </div>
+        <input type="text" name="kelas" value="{{ filters.kelas }}" placeholder="Contoh: XII-1" list="kelasOptions"
+               class="w-full pl-9 rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 transition text-sm">
+        <datalist id="kelasOptions">
+          <option value="X-1"><option value="X-2"><option value="XI-1"><option value="XI-2"><option value="XII-1"><option value="XII-2">
+        </datalist>
       </div>
-      <div>
+      <div class="relative">
         <label class="block text-sm font-medium text-gray-700 mb-1">Kode RIASEC</label>
-        <input type="text" name="riasec" value="{{ filters.riasec }}" placeholder="Contoh: R, RIA" 
-               class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 transition text-sm">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none mt-6">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+          </svg>
+        </div>
+        <input type="text" name="riasec" value="{{ filters.riasec }}" placeholder="Contoh: R, RIA" list="riasecOptions"
+               class="w-full pl-9 rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 transition text-sm">
+        <datalist id="riasecOptions">
+          <option value="R"><option value="I"><option value="A"><option value="S"><option value="E"><option value="C"><option value="RIA"><option value="RIS"><option value="SEC">
+        </datalist>
       </div>
-      <div>
+      <div class="relative">
         <label class="block text-sm font-medium text-gray-700 mb-1">Paket Rekomendasi</label>
-        <select name="paket" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 transition text-sm">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none mt-6">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v8m-6-4h12"/>
+          </svg>
+        </div>
+        <select name="paket" class="w-full pl-9 rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 transition text-sm">
           <option value="">Semua Paket</option>
           <option value="Paket 1" {% if filters.paket == 'Paket 1' %}selected{% endif %}>Paket 1</option>
           <option value="Paket 2" {% if filters.paket == 'Paket 2' %}selected{% endif %}>Paket 2</option>
@@ -143,11 +259,23 @@
         </select>
       </div>
     </div>
-    <div class="mt-4 flex justify-end gap-2">
-      <a href="{{ url_for('admin.dashboard_admin') }}" class="px-4 py-2 text-sm text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition font-medium">Reset</a>
-      <button type="submit" class="px-4 py-2 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition shadow-sm font-semibold">
-        Terapkan Filter
-      </button>
+    <div class="mt-4 flex justify-between">
+      <div>
+        <a href="{{ url_for('admin.dashboard_admin') }}" class="inline-flex items-center gap-2 px-4 py-2 text-sm text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition font-medium">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+          Reset
+        </a>
+      </div>
+      <div>
+        <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition shadow-sm font-semibold">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+          </svg>
+          Terapkan Filter
+        </button>
+      </div>
     </div>
   </form>
 </div>
@@ -174,7 +302,7 @@
           <th class="py-4 px-6 font-semibold">Kelas</th>
           <th class="py-4 px-6 font-semibold">Kode RIASEC</th>
           <th class="py-4 px-6 font-semibold">Paket Rekomendasi</th>
-          <!-- Action column removed for admin since no detail view yet -->
+          <th class="py-4 px-6 font-semibold">Akun</th>
         </tr>
       </thead>
       <tbody class="divide-y divide-gray-100">
@@ -200,6 +328,19 @@
             {% else %}
             <span class="text-gray-400">-</span>
             {% endif %}
+          </td>
+          <td class="py-4 px-6">
+            <button 
+              class="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-xs font-semibold text-gray-700"
+              data-user="{{ {'id': siswa.id, 'username': siswa.username, 'isDefault': siswa.is_default_password, 'defaultPassword': (siswa.nisn if siswa.is_default_password else None)} | tojson | forceescape }}"
+              onclick="openAccountModal(JSON.parse(this.dataset.user))"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+              </svg>
+              Lihat
+            </button>
           </td>
         </tr>
         {% endfor %}
@@ -257,6 +398,43 @@
   </div>
   {% endif %}
 </div>
+
+<div id="accountModal" class="hidden fixed inset-0 z-50 flex items-center justify-center">
+  <div class="absolute inset-0 bg-black bg-opacity-30" onclick="closeAccountModal()"></div>
+  <div class="relative bg-white rounded-xl shadow-xl w-full max-w-md p-6">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg font-bold text-gray-800">Detail Akun</h3>
+      <button class="text-gray-400 hover:text-gray-600" onclick="closeAccountModal()">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    <input type="hidden" id="am-user-id" />
+    <div class="space-y-3">
+      <div class="flex justify-between items-center">
+        <div class="text-sm text-gray-600">Username</div>
+        <div id="am-username" class="font-semibold text-gray-800"></div>
+      </div>
+      <div class="flex justify-between items-center">
+        <div class="text-sm text-gray-600" id="am-password"></div>
+        <div class="flex items-center gap-2">
+          <span id="am-password-value" class="font-mono text-sm text-gray-800"></span>
+          <button id="am-copy-btn" class="px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded text-xs" onclick="copyText('am-password-value')">Copy</button>
+        </div>
+      </div>
+      <p id="am-encrypted-note" class="hidden text-xs text-gray-500 mt-2 bg-gray-50 p-2 rounded border border-gray-100">
+        Password pengguna ini telah diubah dan diamankan dengan enkripsi satu arah (Hashing). Anda tidak dapat melihat password lama demi keamanan, tetapi Anda dapat meresetnya jika diperlukan.
+      </p>
+      <div id="am-actions" class="mt-4 flex gap-2">
+        <button class="flex-1 px-3 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700" onclick="resetDefault()">Reset ke NISN</button>
+        <button class="flex-1 px-3 py-2 bg-indigo-600 text-white rounded-lg text-sm hover:bg-indigo-700" onclick="generateTemp()">Buat Password Sementara</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="fixed right-4 bottom-4 z-50 space-y-2"></div>
 
 <!-- Chart JS Initialization -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -337,5 +515,105 @@
       },
     },
   });
+</script>
+<script>
+  const modal = { el: null, init() { this.el = document.getElementById('accountModal'); }, show() { this.el.classList.remove('hidden'); }, hide() { this.el.classList.add('hidden'); } };
+  function openAccountModal(data) {
+    if (!modal.el) modal.init();
+    document.getElementById('am-username').textContent = data.username;
+    
+    const isDefault = data.isDefault;
+    const defaultPass = data.defaultPassword || '';
+    
+    document.getElementById('am-password').textContent = isDefault ? 'Password default: NISN' : 'Password Pribadi (Terenkripsi)';
+    document.getElementById('am-password-value').textContent = isDefault ? defaultPass : '';
+    
+    // Toggle actions (Reset/Generate)
+    document.getElementById('am-actions').classList.toggle('hidden', isDefault);
+    
+    // Toggle Encrypted Note
+    const encNote = document.getElementById('am-encrypted-note');
+    if (isDefault) {
+        encNote.classList.add('hidden');
+    } else {
+        encNote.classList.remove('hidden');
+    }
+    
+    // Toggle Copy button visibility
+    // Only show copy button if there is actually a password value to copy
+    const copyBtn = document.getElementById('am-copy-btn');
+    if (isDefault && defaultPass) {
+        copyBtn.classList.remove('hidden');
+    } else {
+        copyBtn.classList.add('hidden');
+    }
+
+    document.getElementById('am-user-id').value = data.id;
+    modal.show();
+    
+    // Fallback: If default but no password provided, fetch it
+    if (isDefault && !defaultPass) {
+      fetch(`{{ url_for('admin.password_info', user_id=0) }}`.replace('0', data.id))
+        .then(r => r.json())
+        .then(j => { 
+            if (j.default_password) {
+                document.getElementById('am-password-value').textContent = j.default_password;
+                copyBtn.classList.remove('hidden');
+            }
+        });
+    }
+  }
+  function closeAccountModal() { modal.hide(); }
+  function resetDefault() {
+    const id = document.getElementById('am-user-id').value;
+    const copyBtn = document.getElementById('am-copy-btn');
+    fetch(`{{ url_for('admin.reset_password_default', user_id=0) }}`.replace('0', id), { method: 'POST' })
+      .then(r => r.json())
+      .then(j => {
+        if (j.password) {
+          document.getElementById('am-password').textContent = 'Password default: NISN';
+          document.getElementById('am-password-value').textContent = j.password;
+          document.getElementById('am-actions').classList.add('hidden');
+          copyBtn.classList.remove('hidden');
+          showToast('Password direset ke NISN', 'success');
+        } else {
+          showToast('Gagal mereset password', 'error');
+        }
+      })
+      .catch(() => { showToast('Gagal mereset password', 'error'); });
+  }
+  function generateTemp() {
+    const id = document.getElementById('am-user-id').value;
+    const copyBtn = document.getElementById('am-copy-btn');
+    fetch(`{{ url_for('admin.generate_temp_password', user_id=0) }}`.replace('0', id), { method: 'POST' })
+      .then(r => r.json())
+      .then(j => {
+        if (j.password) {
+          document.getElementById('am-password').textContent = 'Password sementara';
+          document.getElementById('am-password-value').textContent = j.password;
+          copyBtn.classList.remove('hidden');
+          showToast('Password sementara dibuat', 'success');
+        } else {
+          showToast('Gagal membuat password sementara', 'error');
+        }
+      })
+      .catch(() => { showToast('Gagal membuat password sementara', 'error'); });
+  }
+  function copyText(elementId) {
+    const text = document.getElementById(elementId).textContent;
+    if (!text) { showToast('Tidak ada password untuk disalin', 'error'); return; }
+    navigator.clipboard.writeText(text)
+      .then(() => { showToast('Password berhasil disalin', 'success'); })
+      .catch(() => { showToast('Gagal menyalin password', 'error'); });
+  }
+  function showToast(message, type) {
+    const container = document.getElementById('toast');
+    const el = document.createElement('div');
+    el.className = (type === 'success' ? 'bg-green-600 text-white' : 'bg-red-600 text-white') + ' px-3 py-2 rounded-lg text-sm shadow';
+    el.textContent = message;
+    container.appendChild(el);
+    setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity 300ms'; }, 1600);
+    setTimeout(() => { if (container.contains(el)) container.removeChild(el); }, 2000);
+  }
 </script>
 {% endblock %}
