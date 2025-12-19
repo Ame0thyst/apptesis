@@ -15,6 +15,8 @@
 - Input nilai rapor 6 mapel (Biologi, Fisika, Kimia, Matematika, Ekonomi, Sosiologi)
 - Rekomendasi paket pelajaran dengan confidence dan distribusi probabilitas
 - Dashboard guru/admin: ringkasan siswa dan distribusi paket
+- Jelajah Karir berdasarkan kode RIASEC siswa (ditampilkan di halaman hasil dan PDF)
+- Cetak PDF laporan hasil rekomendasi satu halaman A4
 
 ## Arsitektur
 
@@ -31,6 +33,7 @@
 - Database: `MySQL` (driver `PyMySQL`), alternatif SQLite untuk pengembangan
 - ML: `scikit-learn` (RandomForest), `XGBoost` (opsional), `joblib`
 - Frontend: `Tailwind CSS` (CDN), `Chart.js` (CDN)
+- Export Excel: `openpyxl` untuk membuat template di admin
 
 ## Persiapan Lingkungan
 
@@ -74,11 +77,12 @@
   - Login, masuk `Dashboard`
   - Kerjakan `Tes RIASEC` hingga selesai untuk menghasilkan `RiasecResult`
   - Isi `Nilai Rapor` 6 mapel
-  - Buka `Hasil Rekomendasi` untuk melihat paket, confidence, dan probabilitas
+  - Buka `Hasil Rekomendasi` untuk melihat paket, confidence, probabilitas, dan Jelajah Karir
+  - Cetak PDF hasil rekomendasi dengan layout satu halaman
 - Guru
   - Melihat daftar siswa, status tes, dan distribusi paket di `dashboard_guru`
 - Admin
-  - Ringkasan jumlah siswa/guru, distribusi rekomendasi, dan ekspor data sederhana
+  - Ringkasan jumlah siswa/guru, distribusi rekomendasi, ekspor CSV, dan unduh template Excel untuk import data
 
 ## Rekomendasi Paket (ML)
 
@@ -103,6 +107,15 @@
   - SMOTE untuk penyeimbangan kelas
   - Training XGBClassifier, evaluasi, simpan `.pkl`
 
+## Jelajah Karir
+
+- Logika rekomendasi karir berbasis kode RIASEC siswa tanpa perubahan skema database
+- Mapping statis kombinasi/dimensi:
+  - Kombinasi populer: `app/routes/siswa.py:366`
+  - Dimensi tunggal: `app/routes/siswa.py:389`
+- UI Jelajah Karir pada hasil rekomendasi: `app/templates/hasil_rekomendasi.html:108`
+- Seksi karir di PDF laporan: `app/templates/hasil_rekomendasi.html:447`
+
 ## Aset
 
 - Logo: `app/static/img/logo.png`
@@ -125,6 +138,9 @@
 - Chart tidak tampil
   - Pastikan CDN `Chart.js` dapat diakses
   - Cek `skor_list` terisi di `hasil_riasec` route
+- PDF tidak muat satu halaman
+  - Gunakan tombol download dari dashboard siswa, layout A4 sudah disetel di template
+  - Pastikan tidak menambah konten berlebihan di template PDF
 
 ## Lisensi
 

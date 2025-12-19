@@ -8,3 +8,4 @@ scikit-learn
 pandas
 werkzeug
 tailwindcss
+openpyxl
