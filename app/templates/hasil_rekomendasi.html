@@ -1,26 +1,40 @@
-{% extends "base.html" %}
-{% block title %}Paket Mata Pelajaran Pilihan{% endblock %}
-
-{% block nav %}
-<a href="{{ url_for('siswa.logout') }}" class="px-6 py-2 rounded-lg text-white bg-blue-600 hover:bg-blue-700 font-semibold shadow transition">
+{% extends "base.html" %} {% block title %}Paket Mata Pelajaran Pilihan{%
+endblock %} {% block nav %}
+<a
+  href="{{ url_for('siswa.logout') }}"
+  class="px-6 py-2 rounded-lg text-white bg-blue-600 hover:bg-blue-700 font-semibold shadow transition"
+>
   Logout
 </a>
-{% endblock %}
-
-{% block content %}
+{% endblock %} {% block content %}
 <div class="flex flex-col items-center">
   <div class="bg-white rounded-2xl shadow-lg px-8 py-8 max-w-4xl w-full">
     <div class="flex items-center justify-between mb-6">
       <div>
         <h2 class="text-2xl font-bold">Rekomendasi Paket Mata Pelajaran</h2>
-        <div class="text-sm text-gray-500">Top 3 RIASEC: <span class="font-semibold">{{ top3 }}</span></div>
+        <div class="text-sm text-gray-500">
+          Top 3 RIASEC: <span class="font-semibold">{{ top3 }}</span>
+        </div>
       </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
       <div class="lg:col-span-2 bg-gray-50 rounded-xl p-6 border">
         <div class="flex items-center gap-3 mb-4">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6l4 2"/></svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6 text-blue-600"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 6v6l4 2"
+            />
+          </svg>
           <div class="text-lg font-semibold">Paket yang Direkomendasikan</div>
         </div>
         <div class="flex items-start gap-6">
@@ -28,10 +42,19 @@
             <div class="text-3xl font-extrabold mb-2">{{ paket }}</div>
             <ul class="grid grid-cols-2 gap-x-6 text-lg">
               {% for m in paket_mapel %}
-                <li class="flex items-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600" viewBox="0 0 20 20" fill="currentColor"><path d="M16.707 5.293a1 1 0 010 1.414L8.414 15 5 11.586a1 1 0 011.414-1.414L8.414 12.172l7.293-7.293a1 1 0 011.414 0z"/></svg>
-                  {{ m }}
-                </li>
+              <li class="flex items-center gap-2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5 text-green-600"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M16.707 5.293a1 1 0 010 1.414L8.414 15 5 11.586a1 1 0 011.414-1.414L8.414 12.172l7.293-7.293a1 1 0 011.414 0z"
+                  />
+                </svg>
+                {{ m }}
+              </li>
               {% endfor %}
             </ul>
             <div class="text-sm text-gray-600 mt-4">{{ alasan }}</div>
@@ -40,9 +63,14 @@
             {% if paket_confidence is not none %}
             <div class="text-sm text-gray-600 mb-1">Confidence</div>
             <div class="w-full bg-gray-200 rounded-full h-3">
-              <div class="bg-blue-600 h-3 rounded-full" style="width: {{ (paket_confidence * 100) | round(0) }}%"></div>
+              <div
+                class="bg-blue-600 h-3 rounded-full"
+                style="--w: {{ (paket_confidence * 100) | round(0) }}%; width: var(--w)"
+              ></div>
             </div>
-            <div class="text-xs text-gray-500 mt-1">{{ (paket_confidence * 100) | round(1) }}%</div>
+            <div class="text-xs text-gray-500 mt-1">
+              {{ (paket_confidence * 100) | round(1) }}%
+            </div>
             {% else %}
             <div class="text-sm text-gray-500">Confidence tidak tersedia.</div>
             {% endif %}
@@ -53,21 +81,26 @@
       <div class="bg-gray-50 rounded-xl p-6 border">
         <div class="text-lg font-semibold mb-3">Probabilitas Paket</div>
         {% if paket_proba_items %}
-          <div class="space-y-3">
-            {% for label, prob in paket_proba_items %}
-              <div>
-                <div class="flex justify-between text-sm">
-                  <span class="font-semibold">{{ label }}</span>
-                  <span>{{ (prob * 100) | round(1) }}%</span>
-                </div>
-                <div class="w-full bg-gray-200 rounded-full h-2">
-                  <div class="bg-indigo-500 h-2 rounded-full" style="width: {{ (prob * 100) | round(0) }}%"></div>
-                </div>
-              </div>
-            {% endfor %}
+        <div class="space-y-3">
+          {% for label, prob in paket_proba_items %}
+          <div>
+            <div class="flex justify-between text-sm">
+              <span class="font-semibold">{{ label }}</span>
+              <span>{{ (prob * 100) | round(1) }}%</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2">
+              <div
+                class="bg-indigo-500 h-2 rounded-full"
+                style="--w: {{ (prob * 100) | round(0) }}%; width: var(--w)"
+              ></div>
+            </div>
           </div>
+          {% endfor %}
+        </div>
         {% else %}
-          <div class="text-sm text-gray-500">Model tidak menyediakan probabilitas.</div>
+        <div class="text-sm text-gray-500">
+          Model tidak menyediakan probabilitas.
+        </div>
         {% endif %}
       </div>
     </div>
@@ -81,7 +114,14 @@
           <ul class="space-y-1">
             {% for m in mapel %}
             <li class="flex items-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500" viewBox="0 0 20 20" fill="currentColor"><path d="M10 3a1 1 0 011 1v12a1 1 0 11-2 0V4a1 1 0 011-1z"/></svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4 text-gray-500"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path d="M10 3a1 1 0 011 1v12a1 1 0 11-2 0V4a1 1 0 011-1z" />
+              </svg>
               {{ m }}
             </li>
             {% endfor %}
@@ -91,15 +131,389 @@
       </div>
     </div>
 
-    <div class="mt-8 flex items-center justify-end">
-      <a href="{{ url_for('siswa.dashboard_siswa') }}" class="px-5 py-3 rounded-lg text-white bg-green-600 hover:bg-green-700 font-semibold shadow">Kembali ke Dashboard</a>
+    <div class="mt-8 flex items-center justify-end gap-3">
+      <button
+        onclick="generatePDF()"
+        class="px-5 py-3 rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 font-semibold shadow flex items-center gap-2"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+          />
+        </svg>
+        Cetak Laporan (PDF)
+      </button>
+      <a
+        href="{{ url_for('siswa.dashboard_siswa') }}"
+        class="px-5 py-3 rounded-lg text-white bg-green-600 hover:bg-green-700 font-semibold shadow"
+        >Kembali ke Dashboard</a
+      >
     </div>
   </div>
 </div>
-{% endblock %}
-{% block scripts %}
+
+<!-- Hidden Report Template for PDF Generation -->
+<div id="report-template" class="hidden">
+  <div
+    class="p-5 bg-white text-gray-900"
+    style="
+      width: 190mm;
+      min-height: 270mm;
+      font-family: 'Times New Roman', serif;
+    "
+  >
+    <!-- Header -->
+    <div class="border-b-4 border-double border-gray-900 pb-3 mb-4">
+      <div class="flex items-center gap-4">
+        <div class="w-20 flex-shrink-0">
+          <img
+            src="{{ url_for('static', filename='img/logo.png') }}"
+            alt="Logo Sekolah"
+            class="w-full h-auto object-contain"
+          />
+        </div>
+        <div class="flex-1 text-center">
+          <h2 class="text-sm font-bold uppercase tracking-wide text-gray-600">
+            Pemerintah Provinsi Pendidikan
+          </h2>
+          <h1
+            class="text-xl font-extrabold uppercase tracking-wider text-gray-900 leading-tight"
+          >
+            SMA Negeri Contoh Indonesia
+          </h1>
+          <p class="text-[10px] text-gray-600 mt-0.5 leading-tight">
+            Jl. Pendidikan No. 123, Kota Pelajar, Indonesia 12345<br />
+            Telp: (021) 123-4567 | Email: info@smancontoh.sch.id | Website:
+            www.smancontoh.sch.id
+          </p>
+        </div>
+        <!-- Spacer to balance logo if needed, or empty div -->
+        <div class="w-20"></div>
+      </div>
+    </div>
+
+    <div class="text-center mb-4">
+      <h2
+        class="text-base font-bold uppercase border-b border-gray-400 inline-block pb-0.5"
+      >
+        Laporan Hasil Penelusuran Minat & Bakat
+      </h2>
+      <p class="text-[10px] font-semibold text-gray-500 mt-1">
+        Sistem Rekomendasi Pemilihan Mata Pelajaran Pilihan
+      </p>
+    </div>
+
+    <!-- Student Info -->
+    <div class="mb-3">
+      <table class="w-full text-xs">
+        <tr>
+          <td class="w-24 font-bold py-0.5">Nama Siswa</td>
+          <td class="w-3 py-0.5">:</td>
+          <td class="py-0.5 uppercase">
+            {{ student.nama if student else '-' }}
+          </td>
+          <td class="w-24 font-bold py-0.5">Tanggal Cetak</td>
+          <td class="w-3 py-0.5">:</td>
+          <td class="py-0.5"><span id="print-date"></span></td>
+        </tr>
+        <tr>
+          <td class="font-bold py-0.5">NISN</td>
+          <td>:</td>
+          <td>{{ student.nisn if student else '-' }}</td>
+          <td class="font-bold py-0.5">Kelas</td>
+          <td>:</td>
+          <td>{{ student.kelas if student else '-' }}</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Section 1: Hasil Tes RIASEC -->
+    <div class="mb-3">
+      <h3 class="text-sm font-bold border-b border-gray-400 mb-2 pb-1">
+        I. Hasil Tes Minat (RIASEC)
+      </h3>
+      <div class="flex items-start gap-4">
+        <div class="w-1/3">
+          <div
+            class="bg-gray-50 p-2 rounded text-center border border-gray-300"
+          >
+            <div class="text-xs text-gray-600 font-semibold mb-0.5">
+              Kode Dominan
+            </div>
+            <div
+              class="text-3xl font-extrabold text-indigo-800 tracking-widest"
+            >
+              {{ top3 }}
+            </div>
+          </div>
+        </div>
+        <div class="w-2/3">
+          <div class="space-y-1 text-[10px]">
+            {% set labels = ['Realistic', 'Investigative', 'Artistic', 'Social',
+            'Enterprising', 'Conventional'] %} {% for score in riasec_scores %}
+            <div class="flex items-center gap-2">
+              <div class="w-20 font-semibold">{{ labels[loop.index0] }}</div>
+              <div
+                class="flex-1 bg-gray-200 rounded-full h-2 overflow-hidden border border-gray-300"
+              >
+                <div
+                  class="bg-indigo-600 h-full"
+                  style="--w: {{ (score / 15 * 100) if score else 0 }}%; width: var(--w)"
+                ></div>
+              </div>
+              <div class="w-6 text-right font-bold">{{ score }}</div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: Nilai Akademik -->
+    <div class="mb-3">
+      <h3 class="text-sm font-bold border-b border-gray-400 mb-2 pb-1">
+        II. Data Akademik (Nilai Rapor)
+      </h3>
+      <div class="flex gap-4 text-xs">
+        <div class="flex-1">
+          <table class="w-full border-collapse border border-gray-900">
+            <thead>
+              <tr class="bg-gray-100">
+                <th class="border border-gray-900 px-2 py-1 text-left w-2/3">
+                  Mata Pelajaran
+                </th>
+                <th class="border border-gray-900 px-2 py-1 text-center w-1/3">
+                  Nilai
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="border border-gray-900 px-2 py-1">Matematika</td>
+                <td
+                  class="border border-gray-900 px-2 py-1 text-center font-bold"
+                >
+                  {{ nilai_rapor['matematika'] }}
+                </td>
+              </tr>
+              <tr>
+                <td class="border border-gray-900 px-2 py-1">Fisika</td>
+                <td
+                  class="border border-gray-900 px-2 py-1 text-center font-bold"
+                >
+                  {{ nilai_rapor['fisika'] }}
+                </td>
+              </tr>
+              <tr>
+                <td class="border border-gray-900 px-2 py-1">Kimia</td>
+                <td
+                  class="border border-gray-900 px-2 py-1 text-center font-bold"
+                >
+                  {{ nilai_rapor['kimia'] }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="flex-1">
+          <table class="w-full border-collapse border border-gray-900">
+            <thead>
+              <tr class="bg-gray-100">
+                <th class="border border-gray-900 px-2 py-1 text-left w-2/3">
+                  Mata Pelajaran
+                </th>
+                <th class="border border-gray-900 px-2 py-1 text-center w-1/3">
+                  Nilai
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="border border-gray-900 px-2 py-1">Biologi</td>
+                <td
+                  class="border border-gray-900 px-2 py-1 text-center font-bold"
+                >
+                  {{ nilai_rapor['biologi'] }}
+                </td>
+              </tr>
+              <tr>
+                <td class="border border-gray-900 px-2 py-1">Ekonomi</td>
+                <td
+                  class="border border-gray-900 px-2 py-1 text-center font-bold"
+                >
+                  {{ nilai_rapor['ekonomi'] }}
+                </td>
+              </tr>
+              <tr>
+                <td class="border border-gray-900 px-2 py-1">Sosiologi</td>
+                <td
+                  class="border border-gray-900 px-2 py-1 text-center font-bold"
+                >
+                  {{ nilai_rapor['sosiologi'] }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3: Rekomendasi -->
+    <div class="mb-4">
+      <h3 class="text-sm font-bold border-b border-gray-400 mb-2 pb-1">
+        III. Hasil Rekomendasi
+      </h3>
+      <div class="bg-white border border-gray-900 rounded p-3">
+        <div
+          class="flex items-center justify-between mb-2 border-b border-gray-200 pb-2"
+        >
+          <div class="pr-4">
+            <div
+              class="text-[10px] text-gray-500 font-bold uppercase tracking-wider"
+            >
+              Paket Direkomendasikan
+            </div>
+            <div class="text-xl font-extrabold text-indigo-900 mt-0.5">
+              {{ paket }}
+            </div>
+          </div>
+          <div class="text-right whitespace-nowrap">
+            <div
+              class="text-[10px] text-gray-500 font-bold uppercase tracking-wider"
+            >
+              Tingkat Keyakinan
+            </div>
+            <div class="text-lg font-bold text-indigo-700 mt-0.5">
+              {% if paket_confidence is not none %} {{ (paket_confidence * 100)
+              | round(1) }}% {% else %} - {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-2">
+          <div class="text-xs font-bold mb-1">Mata Pelajaran Pilihan:</div>
+          <div class="flex flex-wrap gap-1.5">
+            {% for m in paket_mapel %}
+            <span
+              class="px-2 py-0.5 bg-gray-50 border border-gray-400 rounded text-xs font-semibold text-gray-800"
+            >
+              {{ m }}
+            </span>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div
+          class="text-xs text-gray-700 italic bg-gray-50 p-2 border border-gray-200 rounded"
+        >
+          "{{ alasan }}"
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="flex justify-end mt-4 px-4">
+      <div class="text-center w-56">
+        <p class="mb-12 text-xs">Mengetahui,<br />Guru Bimbingan Konseling</p>
+        <p
+          class="font-bold border-b border-gray-900 inline-block min-w-[150px] pb-1 text-sm"
+        >
+          _______________________
+        </p>
+        <p class="text-xs mt-1">NIP. .................................</p>
+      </div>
+    </div>
+
+    <!-- Disclaimer -->
+    <div class="mt-6 border-t border-gray-300 pt-2 text-center">
+      <p class="text-[8px] text-gray-400 italic">
+        Dokumen ini dihasilkan secara otomatis oleh Sistem Rekomendasi Pemilihan
+        Mata Pelajaran Pilihan. <br />
+        Hasil rekomendasi didasarkan pada data input siswa (Tes RIASEC & Nilai
+        Rapor) dan dapat digunakan sebagai bahan pertimbangan lanjut dengan Guru
+        BK.
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+  // Set print date
+  document.getElementById("print-date").textContent =
+    new Date().toLocaleDateString("id-ID", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+
+  function generatePDF() {
+    const element = document.getElementById("report-template");
+
+    // Make visible temporarily for capture (clone usually works better to avoid UI jump)
+    // But html2pdf can handle it if we clone it.
+
+    // We will clone the element to modify it safely
+    const clone = element.cloneNode(true);
+    clone.classList.remove("hidden");
+    clone.style.display = "block";
+
+    // Create a temporary container
+    const container = document.createElement("div");
+    container.style.position = "absolute";
+    container.style.left = "-9999px";
+    container.style.top = "0";
+    container.appendChild(clone);
+    document.body.appendChild(container);
+
+    const opt = {
+      margin: [10, 10, 10, 10], // top, left, bottom, right (mm)
+      filename: `Laporan_Rekomendasi_{{ student.nama|replace(' ', '_') }}.pdf`,
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true },
+      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+    };
+
+    html2pdf()
+      .set(opt)
+      .from(clone)
+      .save()
+      .then(() => {
+        document.body.removeChild(container);
+        // If auto-print mode, maybe close window or show alert?
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get("print") === "true") {
+          // Optional: Close window after download (might be blocked by browser)
+          // window.close();
+          // Or redirect back to dashboard
+          // window.location.href = "{{ url_for('siswa.dashboard_siswa') }}";
+        }
+      });
+  }
+
+  // Auto-trigger if print=true
+  window.addEventListener("load", function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get("print") === "true") {
+      // Hide normal content? No, just generate.
+      // Maybe show a toast "Sedang memproses laporan..."
+      generatePDF();
+    }
+  });
+</script>
 <script>
   history.pushState(null, "", location.href);
-  window.addEventListener("popstate", function () { history.go(1); });
+  window.addEventListener("popstate", function () {
+    history.go(1);
+  });
 </script>
 {% endblock %}

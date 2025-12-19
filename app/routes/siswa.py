@@ -381,6 +381,9 @@ def hasil_rekomendasi():
 
     return render_template(
         'hasil_rekomendasi.html',
+        student=student,
+        riasec_scores=riasec_scores,
+        nilai_rapor=nilai_rapor,
         top3=top3,
         paket=paket,
         paket_mapel=paket_mapel,
